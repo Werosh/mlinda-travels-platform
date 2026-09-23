@@ -46,6 +46,16 @@ interface Flight {
 interface Airport { id: string; iata_code: string; city: string; name: string }
 interface Airline { id: string; name: string; iata_code: string }
 
+import {
+  getFlightMeta,
+  getFlight,
+  createFlight,
+  updateFlight,
+  createFare,
+  updateFare,
+  deleteFare
+} from '@/app/actions/admin-flights'
+
 const CABIN_CLASSES = ['economy', 'premium', 'business']
 const FARE_TYPES = ['basic', 'standard', 'flex']
 
@@ -75,18 +85,19 @@ export default function AdminFlightEditPage() {
 
   useEffect(() => {
     async function load() {
-      const res = await fetch('/api/admin/flights/meta')
-      if (res.ok) {
-        const data = await res.json()
-        setAirports(data.airports ?? [])
-        setAirlines(data.airlines ?? [])
-      }
-      if (!isNew) {
-        const fRes = await fetch(`/api/admin/flights/${params.id}`)
-        if (fRes.ok) {
-          const data = await fRes.json()
+      try {
+        const meta = await getFlightMeta()
+        setAirports(meta.airports ?? [])
+        setAirlines(meta.airlines ?? [])
+
+        if (!isNew) {
+          const data = await getFlight(params.id)
           setFlight(data)
         }
+      } catch (err: any) {
+        console.error(err)
+        setError(err.message || 'Failed to load flight data')
+      } finally {
         setLoading(false)
       }
     }
@@ -101,66 +112,57 @@ export default function AdminFlightEditPage() {
     setSaving(true)
     setError(null)
     try {
-      const res = await fetch(isNew ? '/api/admin/flights' : `/api/admin/flights/${params.id}`, {
-        method: isNew ? 'POST' : 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(flight),
-      })
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Failed to save')
-      }
-      const saved = await res.json()
+      let savedFlight
       if (isNew) {
-        router.push(`/admin/flights/${saved.id}`)
+        savedFlight = await createFlight(flight)
+        router.push(`/admin/flights/${savedFlight.id}`)
         return
+      } else {
+        savedFlight = await updateFlight(params.id, flight)
       }
+      
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to save flight')
+    } catch (e: any) {
+      setError(e.message || 'Failed to save flight')
     } finally {
       setSaving(false)
     }
   }
 
   const handleSaveFare = async (fare: Partial<Fare>, isNewFare = false) => {
-    const flightId = params.id
-    const res = await fetch(
-      isNewFare
-        ? `/api/admin/flights/${flightId}/fares`
-        : `/api/admin/flights/${flightId}/fares/${fare.id}`,
-      {
-        method: isNewFare ? 'POST' : 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fare),
-      }
-    )
-    if (res.ok) {
-      const updated = await res.json()
+    try {
+      const flightId = params.id
+      let updated: Fare
       if (isNewFare) {
+        updated = await createFare(flightId, fare)
         setFlight(prev => ({
           ...prev,
           flight_fares: [...(prev.flight_fares ?? []), updated],
         }))
         setNewFare(null)
       } else {
+        updated = await updateFare(flightId, fare.id!, fare)
         setFlight(prev => ({
           ...prev,
           flight_fares: (prev.flight_fares ?? []).map(f => f.id === updated.id ? updated : f),
         }))
         setEditingFare(null)
       }
+    } catch (err: any) {
+      setError(err.message || 'Failed to save fare')
     }
   }
 
   const handleDeleteFare = async (fareId: string) => {
-    const res = await fetch(`/api/admin/flights/${params.id}/fares/${fareId}`, { method: 'DELETE' })
-    if (res.ok) {
+    try {
+      await deleteFare(params.id, fareId)
       setFlight(prev => ({
         ...prev,
         flight_fares: (prev.flight_fares ?? []).filter(f => f.id !== fareId),
       }))
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete fare')
     }
   }
 
