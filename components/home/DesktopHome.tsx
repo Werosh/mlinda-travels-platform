@@ -164,33 +164,46 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
       </section>
 
       {/* ── Opinionated Listings: Hotels ────────────────────────────────────── */}
-      <section className="py-24 bg-primary-light/10">
-        <div className="container-base">
+      <section className="dark py-32 bg-background relative overflow-hidden">
+        {/* Subtle background accent */}
+        <div className="absolute -top-40 right-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        
+        <div className="container-base relative z-10">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="border-b border-foreground/10 pb-10 mb-16 flex justify-between items-end"
+            className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8"
           >
-            <h2 className="font-heading text-5xl text-foreground">Featured Stays</h2>
-            <Link href="/hotels" className="text-primary hover:text-primary-dark font-medium flex items-center group">
-              View Collection <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-[1px] w-12 bg-primary" />
+                <span className="text-primary font-mono tracking-widest uppercase text-sm">Accommodation</span>
+              </div>
+              <h2 className="font-heading text-5xl md:text-7xl text-foreground tracking-tighter">
+                Exquisite <span className="italic font-light text-muted-foreground">Sanctuaries</span>
+              </h2>
+            </div>
+            <Link href="/hotels" className="text-primary hover:text-primary-foreground font-medium flex items-center group border border-primary/20 hover:bg-primary transition-colors px-8 py-4 rounded-full">
+              Explore Collection <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-12 gap-8">
-            {featuredHotels.slice(0, 3).map((hotel, i) => (
+          <div className="grid grid-cols-12 gap-6 lg:gap-10">
+            {featuredHotels.slice(0, 2).map((hotel, i) => (
               <motion.div
                 key={hotel.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.2, duration: 0.8, ease: "easeOut" }}
                 className={cn(
-                  i === 0 ? "col-span-8" : "col-span-4"
+                  i === 0 ? "col-span-12 lg:col-span-7" : "col-span-12 lg:col-span-5"
                 )}
               >
-                <HotelCard hotel={hotel} />
+                <div className="group h-full shadow-2xl rounded-3xl overflow-hidden hover:shadow-primary/5 transition-all duration-500">
+                  <HotelCard hotel={hotel} />
+                </div>
               </motion.div>
             ))}
           </div>
@@ -198,35 +211,60 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
       </section>
 
       {/* ── Opinionated Listings: Cars ────────────────────────────────────── */}
-      <section className="py-24 bg-background">
+      <section className="py-32 bg-[#F9F9F8] relative overflow-hidden">
         <div className="container-base">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="border-b border-foreground/10 pb-10 mb-16 flex justify-between items-end"
-          >
-            <h2 className="font-heading text-5xl text-foreground">The Fleet</h2>
-            <Link href="/cars" className="text-primary hover:text-primary-dark font-medium flex items-center group">
-              View All Vehicles <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
-
-          <div className="grid grid-cols-12 gap-8">
-            {featuredCars.slice(0, 3).map((car, i) => (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+            
+            {/* Sticky Sidebar */}
+            <div className="lg:col-span-5 lg:sticky lg:top-32 lg:pr-8">
               <motion.div
-                key={car.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                className={cn(
-                  i === 2 ? "col-span-8" : "col-span-4"
-                )}
               >
-                <CarCard car={car} />
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-[1px] w-8 bg-primary/40" />
+                  <span className="text-primary font-mono tracking-widest uppercase text-xs">Mobility</span>
+                </div>
+                <h2 className="font-heading text-4xl md:text-5xl xl:text-6xl text-foreground tracking-tighter leading-[1.05]">
+                  Uncompromising <br />
+                  <span className="italic font-light text-muted-foreground">Journeys.</span>
+                </h2>
+                <p className="mt-6 text-muted-foreground font-light text-lg">
+                  Traverse the island in absolute comfort and unparalleled style with our handpicked fleet of premium vehicles.
+                </p>
+                <Link href="/cars" className="mt-10 inline-flex items-center justify-center bg-foreground text-background hover:bg-primary transition-colors px-8 py-4 rounded-full font-medium group">
+                  View The Full Fleet <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </motion.div>
-            ))}
+            </div>
+
+            {/* Horizontal Scroll Gallery */}
+            <div className="lg:col-span-7 w-full relative">
+              {/* Fade out mask on the right edge to indicate scrollability */}
+              <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-[#F9F9F8] to-transparent z-10 pointer-events-none" />
+              
+              <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-12 pt-4 no-scrollbar">
+                {featuredCars.map((car, i) => (
+                  <motion.div
+                    key={car.id}
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: i * 0.15, duration: 0.8, ease: "easeOut" }}
+                    className="min-w-[85vw] md:min-w-[420px] snap-start shrink-0"
+                  >
+                    <div className="group h-full shadow-md rounded-[2rem] overflow-hidden bg-card border border-border/40 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:-translate-y-2">
+                      <CarCard car={car} />
+                    </div>
+                  </motion.div>
+                ))}
+                
+                {/* Spacer block to allow the last item to scroll past the mask */}
+                <div className="min-w-[20px] md:min-w-[100px] shrink-0" />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

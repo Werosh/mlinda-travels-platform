@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn.getyourguide.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'content.r9cdn.net',
+      },
     ],
   },
 };
