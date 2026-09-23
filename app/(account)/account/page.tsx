@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { format } from 'date-fns'
-import { Calendar, Car, Building2, ArrowRight, Clock } from 'lucide-react'
+import { Calendar, Car, Building2, ArrowRight, Clock, Plane } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
@@ -86,13 +86,28 @@ export default async function AccountPage() {
           ) : (
             <div className="space-y-3">
               {upcoming.slice(0, 3).map((booking) => {
-                const isHotel = booking.type === 'hotel'
-                const itemName = isHotel
-                  ? (booking as any).room_types?.name
-                  : `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
-                const location = isHotel
-                  ? (booking as any).hotels?.city
-                  : (booking as any).cars?.location
+                let itemName = 'Booking'
+                let location = '–'
+                let icon = <Calendar className="w-5 h-5 text-primary" />
+
+                if (booking.type === 'hotel') {
+                  itemName = (booking as any).room_types?.name || (booking as any).hotels?.name || 'Hotel Booking'
+                  location = (booking as any).hotels?.city || '–'
+                  icon = <Building2 className="w-5 h-5 text-primary" />
+                } else if (booking.type === 'car') {
+                  itemName = `${(booking as any).cars?.make ?? ''} ${(booking as any).cars?.model ?? ''}`.trim() || 'Car Rental'
+                  location = (booking as any).cars?.location || '–'
+                  icon = <Car className="w-5 h-5 text-primary" />
+                } else if (booking.type === 'flight') {
+                  const flight = (booking as any).flights
+                  const origin = flight?.origin?.iata_code ?? ''
+                  const destination = flight?.destination?.iata_code ?? ''
+                  const airline = flight?.airlines?.name ?? ''
+                  const flightNumber = flight?.flight_number ?? ''
+                  itemName = [airline, flightNumber].filter(Boolean).join(' ') || 'Flight'
+                  location = origin && destination ? `${origin} → ${destination}` : '–'
+                  icon = <Plane className="w-5 h-5 text-primary" />
+                }
 
                 return (
                   <Link
@@ -101,14 +116,10 @@ export default async function AccountPage() {
                     className="flex items-center gap-4 bg-white rounded-2xl border border-border p-4 hover:border-primary/40 hover:shadow-sm transition-all group"
                   >
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      {isHotel ? (
-                        <Building2 className="w-5 h-5 text-primary" />
-                      ) : (
-                        <Car className="w-5 h-5 text-primary" />
-                      )}
+                      {icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm truncate">{itemName ?? 'Booking'}</p>
+                      <p className="font-semibold text-sm truncate">{itemName}</p>
                       <p className="text-xs text-muted-foreground">{location} · {format(new Date(booking.start_date), 'MMM d')} → {format(new Date(booking.end_date), 'MMM d, yyyy')}</p>
                     </div>
                     <div className="flex items-center gap-3 flex-shrink-0">
