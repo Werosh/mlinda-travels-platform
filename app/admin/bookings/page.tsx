@@ -30,7 +30,11 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
       *,
       profiles (full_name, phone),
       hotels (name, city),
-      cars (make, model)
+      cars (make, model),
+      flights (
+        flight_number,
+        airlines (name)
+      )
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
 
@@ -103,7 +107,11 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
               {bookings?.map((booking) => {
                 const itemName = booking.type === 'hotel'
                   ? (booking as any).hotels?.name
-                  : `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
+                  : booking.type === 'car'
+                  ? `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
+                  : booking.type === 'flight'
+                  ? `${(booking as any).flights?.airlines?.name} ${(booking as any).flights?.flight_number}`
+                  : '-'
                 const guestName = (booking as any).profiles?.full_name
 
                 return (

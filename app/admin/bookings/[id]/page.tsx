@@ -11,8 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { createClient } from '@/lib/supabase/client'
-import { adminCancelBooking, adminCompleteBooking } from '@/app/actions/admin-bookings'
+import { adminCancelBooking, adminCompleteBooking, getAdminBookingDetails } from '@/app/actions/admin-bookings'
 
 const statusColors: Record<string, string> = {
   confirmed: 'bg-green-100 text-green-700',
@@ -28,51 +27,41 @@ export default function AdminBookingDetailsPage({
 }) {
   const { id } = use(params)
   const router = useRouter()
-  const supabase = createClient()
 
   const [booking, setBooking] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   useEffect(() => {
     async function loadBooking() {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          hotels (*),
-          room_types (*),
-          cars (*),
-          flights (
-            *,
-            airlines (*),
-            origin:airports!flights_origin_airport_id_fkey (*),
-            destination:airports!flights_destination_airport_id_fkey (*)
-          ),
-          profiles (full_name, phone, email)
-        `)
-        .eq('id', id)
-        .single()
-
-      if (error) {
-        console.error(error)
-      } else {
-        setBooking(data)
+      try {
+        const data = await getAdminBookingDetails(id)
+        if (!data) {
+          setErrorMsg('Booking not found in database.')
+        } else {
+          setBooking(data)
+        }
+      } catch (err: any) {
+        console.error(err)
+        setErrorMsg(err.message || 'An error occurred while fetching the booking.')
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     loadBooking()
-  }, [id, supabase])
+  }, [id])
 
   if (loading) {
     return <div className="p-8 text-center text-muted-foreground">Loading booking details...</div>
   }
 
-  if (!booking) {
+  if (errorMsg || !booking) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-xl font-semibold mb-2">Booking Not Found</h2>
+        <h2 className="text-xl font-semibold mb-2 text-red-600">Error Loading Booking</h2>
+        <p className="text-muted-foreground mb-4">{errorMsg || 'Booking Not Found'}</p>
         <Button asChild variant="outline">
           <Link href="/admin/bookings">Back to Bookings</Link>
         </Button>
@@ -234,10 +223,6 @@ export default function AdminBookingDetailsPage({
               <div>
                 <p className="text-muted-foreground">Name</p>
                 <p className="font-medium">{booking.profiles?.full_name || 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Email</p>
-                <p className="font-medium">{booking.profiles?.email || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-muted-foreground">Phone</p>
