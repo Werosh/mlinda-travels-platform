@@ -88,7 +88,7 @@ export function CarCard({ car, className, variant = 'grid', pickupDate, returnDa
                 <span className="text-xs font-normal text-muted-foreground ml-1">/day</span>
               </p>
             </div>
-            <Button asChild size="sm" className="rounded-xl bg-primary hover:bg-[#164d37]">
+            <Button asChild size="sm" className="rounded-full bg-foreground text-background hover:bg-primary transition-colors">
               <Link href={detailUrl}>View Car</Link>
             </Button>
           </div>
@@ -100,7 +100,7 @@ export function CarCard({ car, className, variant = 'grid', pickupDate, returnDa
   return (
     <article
       className={cn(
-        'group bg-white rounded-2xl border border-border overflow-hidden card-hover',
+        'group bg-card rounded-[2rem] border border-border/40 overflow-hidden transition-all duration-500',
         className
       )}
     >
@@ -113,18 +113,15 @@ export function CarCard({ car, className, variant = 'grid', pickupDate, returnDa
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-4 left-4">
           <Badge
-            className={cn(
-              'text-xs rounded-full capitalize border-0 shadow-sm',
-              categoryColors[car.category] ?? 'bg-muted text-muted-foreground'
-            )}
+            className="text-xs rounded-full capitalize border-0 shadow-sm px-3 py-1 bg-background/95 backdrop-blur-md text-foreground font-medium"
           >
             {car.category}
           </Badge>
         </div>
         <button
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors shadow-sm opacity-0 group-hover:opacity-100"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-background/95 backdrop-blur-md flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors shadow-sm opacity-0 group-hover:opacity-100"
           aria-label={`Save ${car.make} ${car.model} to favorites`}
         >
           <Heart className="w-4 h-4 text-muted-foreground hover:text-primary transition-colors" />
@@ -169,7 +166,7 @@ export function CarCard({ car, className, variant = 'grid', pickupDate, returnDa
           <Button
             asChild
             size="sm"
-            className="rounded-xl bg-primary hover:bg-[#164d37] text-xs h-8 px-4"
+            className="rounded-full bg-foreground text-background hover:bg-primary transition-colors text-xs h-8 px-5"
           >
             <Link href={detailUrl} aria-label={`View ${car.make} ${car.model} details`}>
               View

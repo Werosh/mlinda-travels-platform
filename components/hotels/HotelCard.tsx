@@ -107,7 +107,7 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
                 <p className="text-sm text-muted-foreground">Check availability</p>
               )}
             </div>
-            <Button asChild size="sm" className="rounded-xl bg-primary hover:bg-[#164d37]">
+            <Button asChild size="sm" className="rounded-full bg-foreground text-background hover:bg-primary transition-colors">
               <Link href={`/hotels/${hotel.id}`}>View Hotel</Link>
             </Button>
           </div>
@@ -119,7 +119,7 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
   return (
     <article
       className={cn(
-        'group bg-white rounded-2xl border border-border overflow-hidden card-hover',
+        'group bg-card rounded-[2rem] border border-border/40 overflow-hidden transition-all duration-500',
         className
       )}
     >
@@ -135,16 +135,16 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
 
         {hotel.star_rating && (
-          <div className="absolute top-3 left-3">
-            <Badge className="bg-white/90 text-foreground border-0 shadow-sm text-xs font-semibold gap-1">
-              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+          <div className="absolute top-4 left-4">
+            <Badge className="bg-background/95 backdrop-blur-md text-foreground border-0 shadow-sm text-xs font-semibold gap-1 px-2.5 py-1 rounded-full">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               {hotel.star_rating}-star
             </Badge>
           </div>
         )}
 
         <button
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors shadow-sm opacity-0 group-hover:opacity-100"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-background/95 backdrop-blur-md flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors shadow-sm opacity-0 group-hover:opacity-100"
           aria-label={`Save ${hotel.name} to favorites`}
         >
           <Heart className="w-4 h-4 text-muted-foreground hover:text-primary transition-colors" />
@@ -162,11 +162,11 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
         </h3>
 
         {/* Amenities */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           {topAmenities.map((amenity) => (
             <span
               key={amenity}
-              className="px-2 py-0.5 rounded-full bg-primary/8 text-primary text-xs capitalize"
+              className="px-2.5 py-1 rounded-full border border-border/60 text-muted-foreground text-[11px] font-medium tracking-wide capitalize"
             >
               {amenity}
             </span>
@@ -190,7 +190,7 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
           <Button
             asChild
             size="sm"
-            className="rounded-xl bg-primary hover:bg-[#164d37] text-xs h-8 px-4"
+            className="rounded-full bg-foreground text-background hover:bg-primary transition-colors text-xs h-8 px-5"
           >
             <Link href={`/hotels/${hotel.id}`} aria-label={`View ${hotel.name} details`}>
               View
