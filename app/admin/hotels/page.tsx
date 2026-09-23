@@ -24,8 +24,10 @@ export default async function AdminHotelsPage() {
           <h1 className="font-heading text-2xl font-bold">Hotels</h1>
           <p className="text-muted-foreground text-sm">{hotels?.length ?? 0} properties</p>
         </div>
-        <Button className="rounded-xl bg-primary hover:bg-[#164d37]">
-          <Plus className="w-4 h-4 mr-2" /> Add Hotel
+        <Button asChild className="rounded-xl bg-primary hover:bg-[#164d37]">
+          <Link href="/admin/hotels/new">
+            <Plus className="w-4 h-4 mr-2" /> Add Hotel
+          </Link>
         </Button>
       </div>
 

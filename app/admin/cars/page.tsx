@@ -23,8 +23,10 @@ export default async function AdminCarsPage() {
           <h1 className="font-heading text-2xl font-bold">Cars</h1>
           <p className="text-muted-foreground text-sm">{cars?.length ?? 0} vehicles</p>
         </div>
-        <Button className="rounded-xl bg-primary hover:bg-[#164d37] text-white">
-          <Plus className="w-4 h-4 mr-2" /> Add Car
+        <Button asChild className="rounded-xl bg-primary hover:bg-[#164d37] text-white">
+          <Link href="/admin/cars/new">
+            <Plus className="w-4 h-4 mr-2" /> Add Car
+          </Link>
         </Button>
       </div>
 
