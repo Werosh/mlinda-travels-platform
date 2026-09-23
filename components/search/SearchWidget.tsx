@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { format } from 'date-fns'
 import { Calendar, MapPin, Users, Car, Building2, Search, Plane, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -30,7 +30,20 @@ interface SearchWidgetProps {
 
 export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps) {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<'hotels' | 'cars' | 'flights'>('flights')
+  const pathname = usePathname()
+  
+  const [activeTab, setActiveTab] = useState<'hotels' | 'cars' | 'flights'>(() => {
+    if (pathname?.includes('/hotels')) return 'hotels'
+    if (pathname?.includes('/cars')) return 'cars'
+    return 'flights'
+  })
+
+  useEffect(() => {
+    if (pathname?.includes('/hotels')) setActiveTab('hotels')
+    else if (pathname?.includes('/cars')) setActiveTab('cars')
+    else if (pathname?.includes('/flights')) setActiveTab('flights')
+  }, [pathname])
+
   const [location, setLocation] = useState('')
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
   const [guests, setGuests] = useState(2)
