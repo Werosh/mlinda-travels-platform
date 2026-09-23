@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { MapPin, LogIn, User, LogOut, ChevronDown } from 'lucide-react'
+import { MapPin, LogIn, User, LogOut, ChevronDown, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -96,7 +96,25 @@ export function Header() {
         </nav>
 
         {/* Desktop Auth */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          {/* Quick Favorites Link */}
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "rounded-full transition-colors",
+              isTransparentPage && !scrolled
+                ? 'text-white hover:bg-white/10 hover:text-white'
+                : 'text-muted-foreground hover:bg-muted'
+            )}
+            aria-label="Favorites"
+          >
+            <Link href="/favorites">
+              <Heart className="w-5 h-5" />
+            </Link>
+          </Button>
+
           {loading ? (
             <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
           ) : profile ? (
@@ -132,6 +150,10 @@ export function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="rounded-lg">
                     My Bookings
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="rounded-lg">
+                    <Heart className="w-4 h-4 mr-2" />
+                    My Favorites
                 </DropdownMenuItem>
                 {profile.role === 'admin' && (
                   <>
