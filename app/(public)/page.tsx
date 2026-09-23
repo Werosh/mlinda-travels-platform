@@ -117,10 +117,7 @@ export default async function HomePage() {
 
         <div className="relative z-10 container-base pt-28 pb-16 w-full">
           <div className="max-w-2xl mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-sm mb-5 border border-white/20">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              Real-time availability · Sri Lanka
-            </div>
+
             <h1 className="font-heading text-white font-bold leading-tight mb-4">
               Discover
               <br />

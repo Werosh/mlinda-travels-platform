@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
         <div className="grid gap-4">
           {[
             { label: 'Site Name', value: 'Mlinda Travels' },
-            { label: 'Contact Email', value: 'hello@Mlindatravels.lk' },
+            { label: 'Contact Email', value: 'hello@mlindatravels.lk' },
             { label: 'Contact Phone', value: '+94 11 234 5678' },
             { label: 'Country', value: 'Sri Lanka' },
           ].map((field) => (

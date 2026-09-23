@@ -43,11 +43,11 @@ export function Footer() {
             {/* Contact */}
             <div className="flex flex-col gap-2 mb-6">
               <a
-                href="mailto:hello@Mlindatravels.lk"
+                href="mailto:hello@mlindatravels.lk"
                 className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
               >
                 <Mail className="w-4 h-4 text-primary" />
-                hello@Mlindatravels.lk
+                hello@mlindatravels.lk
               </a>
               <a
                 href="tel:+94112345678"
