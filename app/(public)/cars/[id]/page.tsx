@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator'
 import { getCarById, getCarReviews } from '@/lib/services/cars.service'
 import { ReviewList } from '@/components/reviews/ReviewList'
 import { CarBookingWidget } from '@/components/cars/CarBookingWidget'
+import { SearchWidget } from '@/components/search/SearchWidget'
 
 interface CarDetailPageProps {
   params: Promise<{ id: string }>
@@ -45,6 +46,11 @@ export default async function CarDetailPage({ params, searchParams }: CarDetailP
 
   return (
     <div className="pt-20 min-h-screen bg-background">
+      <div className="bg-white border-b border-border py-4">
+        <div className="container-base">
+          <SearchWidget variant="inline" />
+        </div>
+      </div>
       <div className="container-base py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">

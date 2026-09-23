@@ -17,6 +17,7 @@ import {
   Users,
 } from 'lucide-react'
 import { cn, formatDuration } from '@/lib/utils'
+import { SearchWidget } from '@/components/search/SearchWidget'
 
 interface FlightDetailPageProps {
   params: Promise<{ id: string }>
@@ -79,6 +80,13 @@ export default async function FlightDetailPage({
 
   return (
     <div className="pt-20 min-h-screen bg-background">
+      {/* Search bar */}
+      <div className="bg-white border-b border-border py-4">
+        <div className="container-base">
+          <SearchWidget variant="inline" />
+        </div>
+      </div>
+      
       {/* Back */}
       <div className="bg-white border-b border-border">
         <div className="container-base py-3">
