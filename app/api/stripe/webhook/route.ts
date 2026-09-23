@@ -4,7 +4,7 @@ import { createServiceRoleClient } from "@/lib/supabase/service-role";
 import { createBooking } from "@/lib/services/bookings.service";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-11-20.acacia",
+  apiVersion: "2026-08-26.dahlia",
 });
 
 export async function POST(request: NextRequest) {
@@ -39,14 +39,17 @@ export async function POST(request: NextRequest) {
         // Create confirmed booking
         await createBooking({
           userId: metadata.userId,
-          type: metadata.type as "hotel" | "car",
+          type: metadata.type as 'hotel' | 'car' | 'flight',
           itemId: metadata.itemId,
           roomTypeId: metadata.roomTypeId || undefined,
           hotelId: metadata.hotelId || undefined,
           carId: metadata.carId || undefined,
+          flightId: metadata.flightId || undefined,
+          fareId: metadata.fareId || undefined,
           startDate: metadata.startDate,
           endDate: metadata.endDate,
           guests: metadata.guests ? Number(metadata.guests) : 1,
+          passengers: metadata.passengers ? Number(metadata.passengers) : undefined,
           totalPrice: paymentIntent.amount / 100,
           promoCode: metadata.promoCode || undefined,
           discountAmount: metadata.discountAmount
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest) {
 
       // Update booking payment status
       if (paymentIntentId) {
-        await supabase
+        await (supabase as any)
           .from("bookings")
           .update({
             payment_status: "refunded",

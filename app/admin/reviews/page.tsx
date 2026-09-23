@@ -11,7 +11,7 @@ async function approveReview(id: string) {
   'use server'
   const { createClient } = await import('@/lib/supabase/server')
   const supabase = await createClient()
-  await supabase.from('reviews').update({ is_approved: true }).eq('id', id)
+  await (supabase as any).from('reviews').update({ is_approved: true }).eq('id', id)
 }
 
 async function rejectReview(id: string) {

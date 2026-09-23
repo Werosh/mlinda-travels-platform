@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
   LayoutDashboard, Hotel, Car, BookOpen, Users, Star,
-  Tag, Settings, FileText, ChevronLeft, ChevronRight
+  Tag, Settings, FileText, ChevronLeft, ChevronRight, Plane
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +22,7 @@ const navSections = [
     items: [
       { href: '/admin/hotels', label: 'Hotels', icon: Hotel },
       { href: '/admin/cars', label: 'Cars', icon: Car },
+      { href: '/admin/flights', label: 'Flights', icon: Plane },
     ],
   },
   {

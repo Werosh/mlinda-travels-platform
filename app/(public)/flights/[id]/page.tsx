@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { cn, formatDuration } from '@/lib/utils'
 import { SearchWidget } from '@/components/search/SearchWidget'
+import { FareSelectButton } from '@/components/flights/FareSelectButton'
 
 interface FlightDetailPageProps {
   params: Promise<{ id: string }>
@@ -252,17 +253,21 @@ export default async function FlightDetailPage({
                   </li>
                 </ul>
 
-                <Button
-                  asChild
-                  className="w-full rounded-xl bg-primary hover:bg-primary-dark text-white shadow-sm shadow-primary/20"
-                >
-                  <Link
-                    href={`/flights/${flight.id}/checkout?fareId=${fare.id}&passengers=${passengers}`}
-                  >
-                    Select {styles.title}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
-                </Button>
+                <FareSelectButton
+                  fareId={fare.id}
+                  flightId={flight.id}
+                  price={fare.price}
+                  passengers={passengers}
+                  cabinClass={cabin}
+                  fareType={fare.fare_type}
+                  cabinTitle={styles.title}
+                  flightNumber={flight.flight_number}
+                  airline={flight.airlines?.name ?? 'Unknown Airline'}
+                  origin={`${flight.origin?.iata_code ?? ''} – ${flight.origin?.city ?? ''}`}
+                  destination={`${flight.destination?.iata_code ?? ''} – ${flight.destination?.city ?? ''}`}
+                  departure={flight.departure_time}
+                  arrival={flight.arrival_time}
+                />
               </div>
             )
           })}

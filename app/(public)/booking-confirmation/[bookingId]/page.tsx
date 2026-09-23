@@ -3,21 +3,16 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { format, differenceInDays } from 'date-fns'
 import {
-  CheckCircle2, Calendar, MapPin, Users, Download, ArrowRight, Building2, Car
+  CheckCircle2, Calendar, MapPin, Users, ArrowRight, Building2, Car, Plane
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { createClient } from '@/lib/supabase/server'
-import Stripe from 'stripe'
 
 export const metadata: Metadata = {
   title: 'Booking Confirmed',
   description: 'Your Mlinda Travels booking has been confirmed.',
 }
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-08-26.dahlia',
-})
 
 interface ConfirmationPageProps {
   params: Promise<{ bookingId: string }>
@@ -33,7 +28,7 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
   // First try by Stripe PI ID (comes from webhook flow)
   const { data: byPI } = await supabase
     .from('bookings')
-    .select(`*, hotels(*), room_types(*), cars(*)`)
+    .select(`*, hotels(*), room_types(*), cars(*), flights(*, airlines(*), origin:airports!flights_origin_airport_id_fkey(*), destination:airports!flights_destination_airport_id_fkey(*))`)
     .eq('stripe_payment_intent_id', bookingId)
     .single()
 
@@ -43,14 +38,13 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
     // Try by booking UUID
     const { data: byId } = await supabase
       .from('bookings')
-      .select(`*, hotels(*), room_types(*), cars(*)`)
+      .select(`*, hotels(*), room_types(*), cars(*), flights(*, airlines(*), origin:airports!flights_origin_airport_id_fkey(*), destination:airports!flights_destination_airport_id_fkey(*))`)
       .eq('id', bookingId)
       .single()
     booking = byId
   }
 
   // For demo/dev - show a success page even if webhook hasn't fired yet
-  // In production the webhook creates the booking record
   const isProcessing = !booking
 
   if (!isProcessing && booking?.status === 'cancelled') {
@@ -59,13 +53,21 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
 
   const itemName = booking?.type === 'hotel'
     ? (booking as any).room_types?.name
-    : `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
+    : booking?.type === 'car'
+    ? `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
+    : booking?.type === 'flight'
+    ? `${(booking as any).flights?.airlines?.name} ${(booking as any).flights?.flight_number}`
+    : 'Booking'
 
   const locationName = booking?.type === 'hotel'
     ? (booking as any).hotels?.city
-    : (booking as any).cars?.location
+    : booking?.type === 'car'
+    ? (booking as any).cars?.location
+    : booking?.type === 'flight'
+    ? `${(booking as any).flights?.origin?.iata_code} → ${(booking as any).flights?.destination?.iata_code}`
+    : '-'
 
-  const nights = booking
+  const nights = booking && booking.type !== 'flight'
     ? differenceInDays(new Date(booking.end_date), new Date(booking.start_date))
     : null
 
@@ -116,11 +118,15 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
                 <div className="flex items-center gap-3">
                   {booking.type === 'hotel' ? (
                     <Building2 className="w-5 h-5 text-primary flex-shrink-0" />
-                  ) : (
+                  ) : booking.type === 'car' ? (
                     <Car className="w-5 h-5 text-primary flex-shrink-0" />
+                  ) : (
+                    <Plane className="w-5 h-5 text-primary flex-shrink-0" />
                   )}
                   <div>
-                    <p className="text-xs text-muted-foreground">{booking.type === 'hotel' ? 'Room' : 'Vehicle'}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {booking.type === 'hotel' ? 'Room' : booking.type === 'car' ? 'Vehicle' : 'Flight'}
+                    </p>
                     <p className="font-semibold text-sm">{itemName ?? 'Your booking'}</p>
                   </div>
                 </div>
@@ -137,7 +143,7 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
                   <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      {booking.type === 'hotel' ? 'Check-in → Check-out' : 'Pickup → Return'}
+                      {booking.type === 'hotel' ? 'Check-in → Check-out' : booking.type === 'car' ? 'Pickup → Return' : 'Departure → Arrival'}
                     </p>
                     <p className="font-semibold text-sm">
                       {format(new Date(booking.start_date), 'MMM d, yyyy')} →{' '}
@@ -147,12 +153,14 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
                   </div>
                 </div>
 
-                {booking.type === 'hotel' && booking.guests && (
+                {booking.guests && (
                   <div className="flex items-center gap-3">
                     <Users className="w-5 h-5 text-primary flex-shrink-0" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Guests</p>
-                      <p className="font-semibold text-sm">{booking.guests} {booking.guests === 1 ? 'Guest' : 'Guests'}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {booking.type === 'flight' ? 'Passengers' : 'Guests'}
+                      </p>
+                      <p className="font-semibold text-sm">{booking.guests} {booking.type === 'flight' ? (booking.guests === 1 ? 'Passenger' : 'Passengers') : (booking.guests === 1 ? 'Guest' : 'Guests')}</p>
                     </div>
                   </div>
                 )}

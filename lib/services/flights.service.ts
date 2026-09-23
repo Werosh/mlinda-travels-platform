@@ -74,6 +74,17 @@ export async function searchFlights(params: FlightSearchParams): Promise<FlightS
 
   let flights = (data ?? []) as FlightWithDetails[]
 
+  // Filter by Origin / Destination query (matches either)
+  if (params.origin && params.origin.trim()) {
+    const q = params.origin.trim().toLowerCase()
+    flights = flights.filter(f => 
+      f.origin?.city?.toLowerCase().includes(q) ||
+      f.origin?.iata_code?.toLowerCase().includes(q) ||
+      f.destination?.city?.toLowerCase().includes(q) ||
+      f.destination?.iata_code?.toLowerCase().includes(q)
+    )
+  }
+
   // Filter by cabin class availability in-memory
   if (params.cabinClass) {
     flights = flights.filter((f) =>

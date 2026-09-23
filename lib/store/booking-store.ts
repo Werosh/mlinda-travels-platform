@@ -1,25 +1,40 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type BookingType = 'hotel' | 'car'
+export type BookingType = 'hotel' | 'car' | 'flight'
 
 export interface BookingSelection {
   type: BookingType
-  itemId: string           // room_type_id or car_id
+  itemId: string           // room_type_id, car_id, or flight_fare_id
   itemName: string
+  // Hotel fields
   hotelId?: string
   hotelName?: string
+  roomTypeName?: string
+  // Car fields
   carId?: string
   location?: string
+  // Flight fields
+  flightId?: string
+  fareId?: string
+  cabinClass?: string
+  fareType?: string
+  flightNumber?: string
+  airline?: string
+  origin?: string          // "CMB - Colombo"
+  destination?: string     // "DXB - Dubai"
+  departure?: string       // ISO string
+  arrival?: string         // ISO string
+  // Common
   startDate: string
   endDate: string
-  guests: number
-  basePrice: number        // per night or per day
+  guests: number           // passengers for flights
+  basePrice: number        // per night / per day / per passenger
   coverImage?: string
 }
 
 export interface PriceBreakdown {
-  nights: number
+  nights: number           // or days / always 1 for flights
   basePrice: number
   subtotal: number
   taxes: number
@@ -74,4 +89,3 @@ export const useBookingStore = create<BookingStore>()(
     }
   )
 )
-

@@ -266,9 +266,9 @@ INSERT INTO public.airports (id, iata_code, name, city, country) VALUES
 -- AIRLINES
 -- ============================================================
 INSERT INTO public.airlines (id, name, iata_code, logo_url) VALUES
-('50000000-0000-0000-0000-000000000001', 'SriLankan Airlines', 'UL', 'https://upload.wikimedia.org/wikipedia/en/thumb/3/36/SriLankan_Airlines_logo.svg/1200px-SriLankan_Airlines_logo.svg.png'),
-('50000000-0000-0000-0000-000000000002', 'Emirates', 'EK', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/1200px-Emirates_logo.svg.png'),
-('50000000-0000-0000-0000-000000000003', 'British Airways', 'BA', 'https://upload.wikimedia.org/wikipedia/en/thumb/4/42/British_Airways_Logo.svg/1200px-British_Airways_Logo.svg.png');
+('50000000-0000-0000-0000-000000000001', 'SriLankan Airlines', 'UL', 'https://images.pexels.com/photos/17801597/pexels-photo-17801597/free-photo-of-srilankan-airlines-airplane.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
+('50000000-0000-0000-0000-000000000002', 'Emirates', 'EK', 'https://tse1.mm.bing.net/th/id/OIP.DFSk_wdkESPFKgUzLtMVKwHaEm?r=0&pid=Api&h=220&P=0'),
+('50000000-0000-0000-0000-000000000003', 'British Airways', 'BA', 'https://tse3.mm.bing.net/th?id=OIF.WBhpH4aR7pHV8acQMUf2%2bg&r=0&pid=Api&h=220&P=0');
 
 -- ============================================================
 -- FLIGHTS

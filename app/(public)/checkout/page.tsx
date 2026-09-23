@@ -9,13 +9,6 @@ import {
   CheckCircle2, User, CreditCard, ChevronRight, Loader2,
   Building2, Car, Calendar, Users, Tag, X
 } from 'lucide-react'
-import { loadStripe } from '@stripe/stripe-js'
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-} from '@stripe/react-stripe-js'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,10 +17,8 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { useBookingStore } from '@/lib/store/booking-store'
 import { guestDetailsSchema, type GuestDetailsInput } from '@/lib/validations'
-import { validatePromoCode } from '@/app/actions/booking'
+import { validatePromoCode, confirmMockPayment } from '@/app/actions/booking'
 import Image from 'next/image'
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 const STEPS = ['Review', 'Guest Details', 'Payment', 'Confirm']
 
@@ -202,82 +193,46 @@ function promoBreakdown(subtotal: number, discountPercent: number): number {
   return subtotal * (discountPercent / 100)
 }
 
-// ── Payment Form (Stripe Elements) ───────────────────────────
-function PaymentForm({
+// ── Mock Payment Form ───────────────────────────────────────────
+function MockPaymentForm({
   onSuccess,
   guestDetails,
   totalAmount,
 }: {
-  onSuccess: (bookingRef: string, piId: string) => void
+  onSuccess: (bookingId: string) => void
   guestDetails: GuestDetailsInput
   totalAmount: number
 }) {
-  const stripe = useStripe()
-  const elements = useElements()
   const { selection, priceBreakdown, promoCode, discountPercent, clearCart } = useBookingStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!stripe || !elements || !selection) return
+    if (!selection) return
 
     setLoading(true)
     setError(null)
 
     try {
-      // Create PaymentIntent
-      const response = await fetch('/api/stripe/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: totalAmount,
-          currency: 'usd',
-          metadata: {
-            type: selection.type,
-            itemId: selection.itemId,
-            roomTypeId: selection.itemId,
-            hotelId: selection.hotelId ?? '',
-            carId: selection.carId ?? '',
-            startDate: selection.startDate,
-            endDate: selection.endDate,
-            guests: String(selection.guests),
-            promoCode: promoCode ?? '',
-            discountAmount: String(promoBreakdown(priceBreakdown?.subtotal ?? 0, discountPercent)),
-          },
-        }),
+      const discount = promoBreakdown(priceBreakdown?.subtotal ?? 0, discountPercent)
+      
+      const result = await confirmMockPayment({
+        type: selection.type,
+        itemId: selection.itemId,
+        roomTypeId: selection.itemId,
+        hotelId: selection.hotelId ?? '',
+        carId: selection.carId ?? '',
+        startDate: selection.startDate,
+        endDate: selection.endDate,
+        guests: String(selection.guests),
+        totalPrice: totalAmount,
+        promoCode: promoCode ?? '',
+        discountAmount: String(discount),
       })
 
-      if (!response.ok) {
-        const err = await response.json()
-        throw new Error(err.error || 'Payment initialization failed')
-      }
-
-      const { clientSecret, paymentIntentId } = await response.json()
-
-      const cardElement = elements.getElement(CardElement)
-      if (!cardElement) throw new Error('Card element not found')
-
-      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: `${guestDetails.firstName} ${guestDetails.lastName}`,
-            email: guestDetails.email,
-            phone: guestDetails.phone,
-          },
-        },
-      })
-
-      if (stripeError) {
-        setError(stripeError.message ?? 'Payment failed')
-        return
-      }
-
-      if (paymentIntent?.status === 'succeeded') {
-        clearCart()
-        onSuccess('PROCESSING', paymentIntentId)
-      }
+      clearCart()
+      onSuccess(result.bookingId)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Payment failed')
     } finally {
@@ -287,19 +242,14 @@ function PaymentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="p-4 rounded-xl border border-border bg-white">
-        <CardElement
-          options={{
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#1C1C1C',
-                '::placeholder': { color: '#9CA3AF' },
-              },
-            },
-          }}
-        />
+      <div className="p-6 rounded-xl border border-border bg-muted/20 text-center">
+        <CreditCard className="w-8 h-8 text-primary mx-auto mb-2 opacity-80" />
+        <h3 className="font-semibold mb-1">Demo Mode Active</h3>
+        <p className="text-sm text-muted-foreground">
+          No actual payment gateway is integrated. Click below to simulate a successful payment and complete the booking.
+        </p>
       </div>
+      
       {error && (
         <div className="px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive" role="alert">
           {error}
@@ -307,20 +257,16 @@ function PaymentForm({
       )}
       <Button
         type="submit"
-        disabled={!stripe || loading}
+        disabled={loading}
         className="w-full h-12 rounded-xl bg-primary hover:bg-[#164d37] font-semibold text-base shadow-lg shadow-primary/25"
         id="pay-submit"
       >
         {loading ? (
-          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing payment...</>
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</>
         ) : (
-          `Pay $${totalAmount.toFixed(2)}`
+          `Simulate Payment of $${totalAmount.toFixed(2)}`
         )}
       </Button>
-      <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
-        <CreditCard className="w-3.5 h-3.5" />
-        Secured by Stripe. Your card details are never stored.
-      </p>
     </form>
   )
 }
@@ -364,8 +310,8 @@ export default function CheckoutPage() {
     setStep(2)
   }
 
-  const onPaymentSuccess = (bookingRef: string, piId: string) => {
-    router.push(`/booking-confirmation/${piId}`)
+  const onPaymentSuccess = (bookingId: string) => {
+    router.push(`/booking-confirmation/${bookingId}`)
   }
 
   return (
@@ -490,13 +436,11 @@ export default function CheckoutPage() {
                     <CreditCard className="w-5 h-5 text-primary" />
                     Secure Payment
                   </h2>
-                  <Elements stripe={stripePromise}>
-                    <PaymentForm
-                      onSuccess={onPaymentSuccess}
-                      guestDetails={guestDetails}
-                      totalAmount={totalAmount}
-                    />
-                  </Elements>
+                  <MockPaymentForm
+                    onSuccess={onPaymentSuccess}
+                    guestDetails={guestDetails}
+                    totalAmount={totalAmount}
+                  />
                   <Button variant="ghost" className="mt-4 rounded-xl w-full text-muted-foreground" onClick={() => setStep(1)}>
                     ← Back to Details
                   </Button>

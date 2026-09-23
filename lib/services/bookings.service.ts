@@ -7,14 +7,17 @@ import { differenceInDays } from 'date-fns'
 // ── Create Booking (with availability lock) ───────────────────
 export async function createBooking(params: {
   userId: string
-  type: 'hotel' | 'car'
+  type: 'hotel' | 'car' | 'flight'
   itemId: string
   roomTypeId?: string
   hotelId?: string
   carId?: string
+  flightId?: string
+  fareId?: string
   startDate: string
   endDate: string
   guests?: number
+  passengers?: number
   totalPrice: number
   promoCode?: string
   discountAmount?: number
@@ -36,9 +39,10 @@ export async function createBooking(params: {
         room_type_id: params.roomTypeId ?? null,
         hotel_id: params.hotelId ?? null,
         car_id: params.carId ?? null,
+        flight_id: params.flightId ?? null,
         start_date: params.startDate,
         end_date: params.endDate,
-        guests: params.guests ?? 1,
+        guests: params.passengers ?? params.guests ?? 1,
         total_price: params.totalPrice,
         promo_code: params.promoCode ?? null,
         discount_amount: params.discountAmount ?? 0,
@@ -59,6 +63,8 @@ export async function createBooking(params: {
       await decrementRoomAvailability(params.roomTypeId, params.startDate, params.endDate)
     } else if (params.type === 'car' && params.carId) {
       await lockCarAvailability(params.carId, params.startDate, params.endDate)
+    } else if (params.type === 'flight' && params.fareId) {
+      await decrementFlightSeats(params.fareId, params.passengers ?? 1)
     }
 
     try {
@@ -122,6 +128,26 @@ async function lockCarAvailability(
   }
 }
 
+// ── Decrement Flight Seats ────────────────────────────────────
+async function decrementFlightSeats(
+  fareId: string,
+  passengers: number
+): Promise<void> {
+  const supabase = createServiceRoleClient()
+  const { data: fare } = await (supabase as any)
+    .from('flight_fares')
+    .select('seats_available')
+    .eq('id', fareId)
+    .single()
+
+  if (!fare) return
+  const newSeats = Math.max(0, fare.seats_available - passengers)
+  await (supabase as any)
+    .from('flight_fares')
+    .update({ seats_available: newSeats })
+    .eq('id', fareId)
+}
+
 // ── Send Booking Confirmation Email (Supabase built-in SMTP) ──
 async function sendBookingConfirmationEmail(
   bookingRef: string,
@@ -146,7 +172,7 @@ export async function getUserBookings(userId: string): Promise<BookingWithDetail
   const supabase = await createClient()
   const { data } = await (supabase as any)
     .from('bookings')
-    .select(`*, hotels (*), room_types (*), cars (*)`)
+    .select(`*, hotels (*), room_types (*), cars (*), flights (*, airlines(*), origin:airports!flights_origin_airport_id_fkey(*), destination:airports!flights_destination_airport_id_fkey(*))`)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
@@ -159,9 +185,9 @@ export async function getBookingById(
   userId?: string
 ): Promise<BookingWithDetails | null> {
   const supabase = await createClient()
-  let query = supabase
+  let query = (supabase as any)
     .from('bookings')
-    .select(`*, hotels (*), room_types (*), cars (*), profiles (full_name, phone)`)
+    .select(`*, hotels (*), room_types (*), cars (*), flights (*, airlines(*), origin:airports!flights_origin_airport_id_fkey(*), destination:airports!flights_destination_airport_id_fkey(*)), profiles (full_name, phone)`)
     .eq('id', bookingId)
 
   if (userId) {
