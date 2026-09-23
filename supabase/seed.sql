@@ -254,6 +254,56 @@ INSERT INTO public.promotions (code, description, discount_percent, valid_from, 
 ('EARLYBIRD', 'Early bird special - 12% off when booking 2 weeks ahead', 12.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '120 days', NULL, 75.00, 'all', TRUE);
 
 -- ============================================================
+-- AIRPORTS
+-- ============================================================
+INSERT INTO public.airports (id, iata_code, name, city, country) VALUES
+('40000000-0000-0000-0000-000000000001', 'CMB', 'Bandaranaike International Airport', 'Colombo', 'Sri Lanka'),
+('40000000-0000-0000-0000-000000000002', 'HRI', 'Mattala Rajapaksa International Airport', 'Hambantota', 'Sri Lanka'),
+('40000000-0000-0000-0000-000000000003', 'DXB', 'Dubai International Airport', 'Dubai', 'UAE'),
+('40000000-0000-0000-0000-000000000004', 'LHR', 'Heathrow Airport', 'London', 'UK');
+
+-- ============================================================
+-- AIRLINES
+-- ============================================================
+INSERT INTO public.airlines (id, name, iata_code, logo_url) VALUES
+('50000000-0000-0000-0000-000000000001', 'SriLankan Airlines', 'UL', 'https://upload.wikimedia.org/wikipedia/en/thumb/3/36/SriLankan_Airlines_logo.svg/1200px-SriLankan_Airlines_logo.svg.png'),
+('50000000-0000-0000-0000-000000000002', 'Emirates', 'EK', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/1200px-Emirates_logo.svg.png'),
+('50000000-0000-0000-0000-000000000003', 'British Airways', 'BA', 'https://upload.wikimedia.org/wikipedia/en/thumb/4/42/British_Airways_Logo.svg/1200px-British_Airways_Logo.svg.png');
+
+-- ============================================================
+-- FLIGHTS
+-- ============================================================
+INSERT INTO public.flights (id, flight_number, airline_id, origin_airport_id, destination_airport_id, departure_time, arrival_time, duration_minutes, stops, aircraft_type, is_active) VALUES
+('60000000-0000-0000-0000-000000000001', 'UL225', '50000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000001', '40000000-0000-0000-0000-000000000003', CURRENT_DATE + INTERVAL '1 day' + INTERVAL '18 hours', CURRENT_DATE + INTERVAL '1 day' + INTERVAL '22 hours' + INTERVAL '30 minutes', 270, 0, 'A330-300', TRUE),
+('60000000-0000-0000-0000-000000000002', 'EK654', '50000000-0000-0000-0000-000000000002', '40000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000001', CURRENT_DATE + INTERVAL '2 days' + INTERVAL '10 hours', CURRENT_DATE + INTERVAL '2 days' + INTERVAL '16 hours', 270, 0, 'B777-300ER', TRUE),
+('60000000-0000-0000-0000-000000000003', 'BA119', '50000000-0000-0000-0000-000000000003', '40000000-0000-0000-0000-000000000004', '40000000-0000-0000-0000-000000000001', CURRENT_DATE + INTERVAL '3 days' + INTERVAL '21 hours', CURRENT_DATE + INTERVAL '4 days' + INTERVAL '12 hours' + INTERVAL '45 minutes', 645, 1, 'B787-9', TRUE);
+
+-- ============================================================
+-- FLIGHT FARES
+-- ============================================================
+INSERT INTO public.flight_fares (id, flight_id, cabin_class, fare_type, price, seats_available, baggage_allowance, is_refundable) VALUES
+('70000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000001', 'economy', 'standard', 350.00, 150, '30kg', FALSE),
+('70000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000001', 'business', 'flex', 1200.00, 20, '40kg', TRUE),
+('70000000-0000-0000-0000-000000000003', '60000000-0000-0000-0000-000000000002', 'economy', 'basic', 320.00, 180, '25kg', FALSE),
+('70000000-0000-0000-0000-000000000004', '60000000-0000-0000-0000-000000000002', 'business', 'flex', 1350.00, 24, '40kg', TRUE),
+('70000000-0000-0000-0000-000000000005', '60000000-0000-0000-0000-000000000003', 'economy', 'standard', 850.00, 160, '23kg', FALSE),
+('70000000-0000-0000-0000-000000000006', '60000000-0000-0000-0000-000000000003', 'premium', 'flex', 1400.00, 30, '2x23kg', TRUE);
+
+-- ============================================================
+-- FLIGHT SEATS (A small subset of seats for the demo)
+-- ============================================================
+INSERT INTO public.flight_seats (id, flight_id, seat_number, cabin_class, is_available) VALUES
+-- Flight 1 (UL225)
+('80000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000001', '1A', 'business', FALSE),
+('80000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000001', '1B', 'business', TRUE),
+('80000000-0000-0000-0000-000000000003', '60000000-0000-0000-0000-000000000001', '12A', 'economy', TRUE),
+('80000000-0000-0000-0000-000000000004', '60000000-0000-0000-0000-000000000001', '12B', 'economy', TRUE),
+('80000000-0000-0000-0000-000000000005', '60000000-0000-0000-0000-000000000001', '12C', 'economy', FALSE),
+-- Flight 2 (EK654)
+('80000000-0000-0000-0000-000000000006', '60000000-0000-0000-0000-000000000002', '14A', 'economy', TRUE),
+('80000000-0000-0000-0000-000000000007', '60000000-0000-0000-0000-000000000002', '14B', 'economy', TRUE);
+
+-- ============================================================
 -- SAMPLE APPROVED REVIEWS
 -- ============================================================
 -- NOTE: These are seeded without user_id for display purposes.

@@ -198,3 +198,40 @@ CREATE POLICY "favorites_insert_own" ON public.favorites
 
 CREATE POLICY "favorites_delete_own" ON public.favorites
   FOR DELETE USING (auth.uid() = user_id);
+
+-- ============================================================
+-- FLIGHTS POLICIES
+-- ============================================================
+ALTER TABLE public.airports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.airlines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.flights ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.flight_fares ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.flight_seats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.flight_passengers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "airports_public_select" ON public.airports FOR SELECT USING (TRUE);
+CREATE POLICY "airports_admin_all" ON public.airports USING (public.is_admin());
+
+CREATE POLICY "airlines_public_select" ON public.airlines FOR SELECT USING (TRUE);
+CREATE POLICY "airlines_admin_all" ON public.airlines USING (public.is_admin());
+
+CREATE POLICY "flights_public_select" ON public.flights FOR SELECT USING (is_active = TRUE OR public.is_admin());
+CREATE POLICY "flights_admin_all" ON public.flights USING (public.is_admin());
+
+CREATE POLICY "fares_public_select" ON public.flight_fares FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.flights f WHERE f.id = flight_id AND (f.is_active = TRUE OR public.is_admin()))
+);
+CREATE POLICY "fares_admin_all" ON public.flight_fares USING (public.is_admin());
+
+CREATE POLICY "seats_public_select" ON public.flight_seats FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.flights f WHERE f.id = flight_id AND (f.is_active = TRUE OR public.is_admin()))
+);
+CREATE POLICY "seats_admin_all" ON public.flight_seats USING (public.is_admin());
+
+CREATE POLICY "passengers_select_own" ON public.flight_passengers FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.bookings b WHERE b.id = booking_id AND (b.user_id = auth.uid() OR public.is_admin()))
+);
+CREATE POLICY "passengers_insert_own" ON public.flight_passengers FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.bookings b WHERE b.id = booking_id AND (b.user_id = auth.uid() OR public.is_admin()))
+);
+CREATE POLICY "passengers_admin_all" ON public.flight_passengers USING (public.is_admin());

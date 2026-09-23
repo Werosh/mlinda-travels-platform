@@ -134,17 +134,75 @@ CREATE INDEX IF NOT EXISTS car_avail_date_idx ON public.car_availability(date);
 CREATE INDEX IF NOT EXISTS car_avail_car_idx ON public.car_availability(car_id);
 
 -- ============================================================
+-- FLIGHTS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.airports (
+  id uuid primary key default gen_random_uuid(),
+  iata_code text unique not null,
+  name text not null,
+  city text not null,
+  country text not null
+);
+
+CREATE TABLE IF NOT EXISTS public.airlines (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  iata_code text unique,
+  logo_url text
+);
+
+CREATE TABLE IF NOT EXISTS public.flights (
+  id uuid primary key default gen_random_uuid(),
+  flight_number text not null,
+  airline_id uuid references public.airlines(id),
+  origin_airport_id uuid references public.airports(id),
+  destination_airport_id uuid references public.airports(id),
+  departure_time timestamptz not null,
+  arrival_time timestamptz not null,
+  duration_minutes int,
+  stops int default 0,
+  aircraft_type text,
+  is_active boolean default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+CREATE INDEX IF NOT EXISTS flights_origin_dest_idx ON public.flights(origin_airport_id, destination_airport_id);
+
+CREATE TABLE IF NOT EXISTS public.flight_fares (
+  id uuid primary key default gen_random_uuid(),
+  flight_id uuid references public.flights(id) on delete cascade,
+  cabin_class text not null, -- economy/premium/business
+  fare_type text not null,   -- basic/standard/flex
+  price numeric not null,
+  seats_available int not null,
+  baggage_allowance text,
+  is_refundable boolean default false
+);
+CREATE INDEX IF NOT EXISTS flight_fares_flight_idx ON public.flight_fares(flight_id);
+
+CREATE TABLE IF NOT EXISTS public.flight_seats (
+  id uuid primary key default gen_random_uuid(),
+  flight_id uuid references public.flights(id) on delete cascade,
+  seat_number text not null, -- '14A'
+  cabin_class text not null,
+  is_available boolean default true,
+  unique (flight_id, seat_number)
+);
+
+-- ============================================================
 -- BOOKINGS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS public.bookings (
   id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   booking_ref             TEXT UNIQUE NOT NULL,
+  booking_group_id        UUID, -- for linking round-trips
   user_id                 UUID NOT NULL REFERENCES public.profiles(id),
-  type                    TEXT NOT NULL CHECK (type IN ('hotel', 'car')),
+  type                    TEXT NOT NULL CHECK (type IN ('hotel', 'car', 'flight')),
   item_id                 UUID NOT NULL,
   room_type_id            UUID REFERENCES public.room_types(id),
   hotel_id                UUID REFERENCES public.hotels(id),
   car_id                  UUID REFERENCES public.cars(id),
+  flight_id               UUID REFERENCES public.flights(id),
   start_date              DATE NOT NULL,
   end_date                DATE NOT NULL,
   guests                  INT DEFAULT 1,
@@ -166,6 +224,20 @@ CREATE INDEX IF NOT EXISTS bookings_status_idx ON public.bookings(status);
 CREATE INDEX IF NOT EXISTS bookings_dates_idx ON public.bookings(start_date, end_date);
 CREATE INDEX IF NOT EXISTS bookings_ref_idx ON public.bookings(booking_ref);
 CREATE INDEX IF NOT EXISTS bookings_type_idx ON public.bookings(type);
+CREATE INDEX IF NOT EXISTS bookings_group_idx ON public.bookings(booking_group_id);
+
+-- ============================================================
+-- FLIGHT PASSENGERS
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.flight_passengers (
+  id uuid primary key default gen_random_uuid(),
+  booking_id uuid references public.bookings(id) on delete cascade,
+  full_name text not null,
+  date_of_birth date,
+  passport_number text,
+  seat_id uuid references public.flight_seats(id)
+);
+CREATE INDEX IF NOT EXISTS flight_pass_booking_idx ON public.flight_passengers(booking_id);
 
 -- ============================================================
 -- REVIEWS
@@ -260,6 +332,7 @@ CREATE TRIGGER profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW
 CREATE TRIGGER hotels_updated_at BEFORE UPDATE ON public.hotels FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 CREATE TRIGGER cars_updated_at BEFORE UPDATE ON public.cars FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 CREATE TRIGGER bookings_updated_at BEFORE UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+CREATE TRIGGER flights_updated_at BEFORE UPDATE ON public.flights FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ============================================================
 -- Helper: generate booking reference
