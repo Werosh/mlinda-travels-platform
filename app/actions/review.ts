@@ -23,6 +23,7 @@ export async function submitReview(formData: FormData) {
 
   const hotelId = type === 'hotel' ? itemId : null
   const carId = type === 'car' ? itemId : null
+  const flightId = type === 'flight' ? itemId : null
 
   // Ensure this booking actually belongs to the user
   const { data: booking } = await supabase
@@ -54,6 +55,7 @@ export async function submitReview(formData: FormData) {
       booking_id: bookingId,
       hotel_id: hotelId,
       car_id: carId,
+      flight_id: flightId,
       rating,
       comment: comment || null,
       is_approved: false // requires admin approval

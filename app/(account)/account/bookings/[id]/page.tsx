@@ -84,8 +84,16 @@ export default async function BookingDetailsPage({
     .maybeSingle()
 
   const hasReviewed = !!existingReview
-  const isPast = new Date(booking.end_date) < new Date()
-  const canReview = (booking.status === 'completed' || (booking.status === 'confirmed' && isPast)) && (isHotel || isCar)
+
+  // For flights, check arrival_time. For hotels/cars, check end_date.
+  let isPast = false
+  if (isFlight && flight?.arrival_time) {
+    isPast = new Date(flight.arrival_time) < new Date()
+  } else {
+    isPast = new Date(booking.end_date) < new Date()
+  }
+
+  const canReview = booking.status === 'completed' || (booking.status === 'confirmed' && isPast)
 
   return (
     <div className="bg-background min-h-screen">
@@ -318,12 +326,12 @@ export default async function BookingDetailsPage({
               <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
                 <h3 className="font-semibold text-lg mb-2">Rate Your Experience</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Share your thoughts about this {isHotel ? 'hotel' : 'car'} to help other travelers.
+                  Share your thoughts about this {isHotel ? 'hotel' : isCar ? 'car' : 'flight'} to help other travelers.
                 </p>
                 <LeaveReviewDialog 
                   bookingId={booking.id}
                   type={booking.type}
-                  itemId={isHotel ? (booking.hotel_id as string) : (booking.car_id as string)}
+                  itemId={isHotel ? (booking.hotel_id as string) : isCar ? (booking.car_id as string) : (booking.flight_id as string)}
                   hasReviewed={hasReviewed}
                 />
               </div>
