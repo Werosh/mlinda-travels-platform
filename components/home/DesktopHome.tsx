@@ -44,27 +44,28 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
           >
             <source src="/Hero-bg-video.mp4" type="video/mp4" />
           </video>
-          {/* Dark Overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          {/* Sophisticated Gradient Overlay for text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
         </div>
 
         <div className="container-base relative z-10 flex-1 flex flex-col justify-center">
           
           <div className="grid grid-cols-12 gap-8 items-center h-full relative">
             
-            {/* Massive Typography - Centered/Left */}
+            {/* Massive Typography - Left */}
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               className="col-span-12 lg:col-span-10 z-20"
             >
-              <h1 className="font-heading text-[11vw] lg:text-[8vw] leading-[0.85] tracking-tighter text-white">
+              <h1 className="font-heading text-[11vw] lg:text-[8vw] leading-[0.85] tracking-tighter text-white drop-shadow-2xl">
                 The Island
                 <br />
                 <span className="italic font-light text-white/90">Curated.</span>
               </h1>
-              <p className="text-white/80 text-xl lg:text-2xl mt-8 max-w-xl font-light leading-relaxed">
+              <p className="text-white/90 text-xl lg:text-3xl mt-8 max-w-2xl font-serif font-light leading-snug drop-shadow-lg">
                 An exclusive collection of Sri Lanka's finest stays, premium vehicles, and exceptional flights designed for the discerning traveler.
               </p>
             </motion.div>
