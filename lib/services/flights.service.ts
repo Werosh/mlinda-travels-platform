@@ -21,13 +21,6 @@ export interface FlightSearchResult {
   totalPages: number
 }
 
-// Format duration as "Xh Ym"
-export function formatDuration(minutes: number): string {
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return m > 0 ? `${h}h ${m}m` : `${h}h`
-}
-
 // ── Search Flights ─────────────────────────────────────────────
 export async function searchFlights(params: FlightSearchParams): Promise<FlightSearchResult> {
   const supabase = await createClient()

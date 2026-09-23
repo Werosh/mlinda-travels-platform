@@ -6,8 +6,7 @@ import { ArrowRight, Clock, Luggage, RotateCcw, Wifi, ChevronRight } from 'lucid
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { FlightWithDetails } from '@/lib/supabase/types'
-import { formatDuration } from '@/lib/services/flights.service'
-import { cn } from '@/lib/utils'
+import { cn, formatDuration } from '@/lib/utils'
 
 interface FlightCardProps {
   flight: FlightWithDetails

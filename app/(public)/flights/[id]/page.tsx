@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getFlightById, formatDuration } from '@/lib/services/flights.service'
+import { getFlightById } from '@/lib/services/flights.service'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
@@ -16,7 +16,7 @@ import {
   ChevronLeft,
   Users,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, formatDuration } from '@/lib/utils'
 
 interface FlightDetailPageProps {
   params: Promise<{ id: string }>
