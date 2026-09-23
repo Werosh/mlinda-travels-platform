@@ -18,9 +18,9 @@ import { signOut } from '@/lib/auth/actions'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { href: '/hotels', label: 'Hotels' },
-  { href: '/cars', label: 'Car Rentals' },
-  { href: '/about', label: 'About' },
+  { href: '/hotels', label: 'Stays' },
+  { href: '/cars', label: 'Vehicles' },
+  { href: '/flights', label: 'Flights' },
 ]
 
 export function Header() {
@@ -45,8 +45,8 @@ export function Header() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isTransparentPage && !scrolled
-          ? 'bg-transparent'
-          : 'bg-white/95 backdrop-blur-md border-b border-border shadow-sm'
+          ? 'bg-transparent backdrop-blur-[4px]'
+          : 'bg-white/95 backdrop-blur-md shadow-sm'
       )}
     >
       <div className="container-base flex items-center justify-between h-20">
@@ -61,7 +61,8 @@ export function Header() {
           </div>
           <span
             className={cn(
-              'font-heading font-semibold text-xl tracking-tight transition-colors text-foreground'
+              'font-heading font-semibold text-xl tracking-tight transition-colors',
+              isTransparentPage && !scrolled ? 'text-white' : 'text-foreground'
             )}
           >
             Mlinda<span className="text-primary">.</span>
@@ -79,7 +80,7 @@ export function Header() {
                 pathname.startsWith(link.href)
                   ? 'text-primary bg-primary/10'
                   : isTransparentPage && !scrolled
-                  ? 'text-foreground/90 hover:text-foreground hover:bg-black/5'
+                  ? 'text-white/90 hover:text-white hover:bg-white/10'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               )}
             >
@@ -96,7 +97,10 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger render={<Button
                   variant="ghost"
-                  className="flex items-center gap-2 px-3 rounded-xl"
+                  className={cn(
+                    "flex items-center gap-2 px-3 rounded-xl hover:bg-transparent",
+                    isTransparentPage && !scrolled ? "hover:bg-white/10" : ""
+                  )}
                   aria-label="User menu"
                 />}>
                   <Avatar className="w-8 h-8 border-2 border-primary/20">
@@ -107,12 +111,13 @@ export function Header() {
                   </Avatar>
                   <span
                     className={cn(
-                      'text-sm font-medium max-w-[100px] truncate text-foreground'
+                      'text-sm font-medium max-w-[100px] truncate',
+                      isTransparentPage && !scrolled ? 'text-white' : 'text-foreground'
                     )}
                   >
                     {profile.full_name?.split(' ')[0] ?? 'Account'}
                   </span>
-                  <ChevronDown className="w-4 h-4 opacity-60 text-foreground" />
+                  <ChevronDown className={cn("w-4 h-4 opacity-60", isTransparentPage && !scrolled ? 'text-white' : 'text-foreground')} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52 rounded-xl p-1">
                 <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="rounded-lg">
@@ -147,15 +152,15 @@ export function Header() {
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  'rounded-xl px-5',
+                  'rounded-xl px-5 transition-colors',
                   isTransparentPage && !scrolled
-                    ? 'text-foreground hover:bg-black/5'
+                    ? 'text-white hover:bg-white/10 hover:text-white'
                     : ''
                 )}
               >
                 <Link href="/auth/login">Sign In</Link>
               </Button>
-              <Button asChild size="sm" className="rounded-xl px-5 bg-primary hover:bg-primary-dark">
+              <Button asChild size="sm" className="rounded-xl px-5 bg-primary hover:bg-primary-dark border border-transparent shadow-lg shadow-primary/20">
                 <Link href="/auth/register">
                   <LogIn className="w-4 h-4 mr-1.5" />
                   Register

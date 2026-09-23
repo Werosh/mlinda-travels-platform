@@ -50,11 +50,11 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
         </div>
 
         <div className="container-base relative z-10 flex-1 flex flex-col justify-center">
-          
+
           <div className="grid grid-cols-12 gap-8 items-center h-full relative">
-            
+
             {/* Massive Typography - Left */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
@@ -65,14 +65,14 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
                 <br />
                 <span className="italic font-light text-white/90">Curated.</span>
               </h1>
-              <p className="text-white/90 text-xl lg:text-3xl mt-8 max-w-2xl font-serif font-light leading-snug drop-shadow-lg">
+              <p className="text-white/90 text-[20px] md:text-[26px] lg:text-[30px] mt-8 max-w-2xl font-serif font-light leading-snug drop-shadow-lg">
                 An exclusive collection of Sri Lanka's finest stays, premium vehicles, and exceptional flights designed for the discerning traveler.
               </p>
             </motion.div>
           </div>
 
           {/* Integrated Search Widget Pill at the Bottom */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6, ease: 'easeOut' }}
@@ -80,7 +80,7 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
           >
             <SearchWidget variant="hero" />
           </motion.div>
-          
+
         </div>
       </section>
 
@@ -113,11 +113,11 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
               transition={{ delay: i * 0.1 }}
               className={cn(
                 "group relative rounded-none overflow-hidden cursor-pointer",
-                i === 0 ? "col-span-8 aspect-[16/9]" : 
-                i === 1 ? "col-span-4 aspect-[3/4]" :
-                i === 2 ? "col-span-4 aspect-[4/5] mt-[-10%]" :
-                i === 3 ? "col-span-4 aspect-[4/5]" :
-                "col-span-4 aspect-[4/5] mt-[10%]"
+                i === 0 ? "col-span-8 aspect-[16/9]" :
+                  i === 1 ? "col-span-4 aspect-[3/4]" :
+                    i === 2 ? "col-span-4 aspect-[4/5] mt-[-10%]" :
+                      i === 3 ? "col-span-4 aspect-[4/5]" :
+                        "col-span-4 aspect-[4/5] mt-[10%]"
               )}
             >
               <Link href={`/hotels?city=${dest.city}`} className="block w-full h-full">
@@ -148,10 +148,10 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
       <section className="py-24 bg-primary-light/10">
         <div className="container-base">
           <motion.div
-             initial={{ opacity: 0 }}
-             whileInView={{ opacity: 1 }}
-             viewport={{ once: true }}
-             className="border-b border-foreground/10 pb-10 mb-16 flex justify-between items-end"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="border-b border-foreground/10 pb-10 mb-16 flex justify-between items-end"
           >
             <h2 className="font-heading text-5xl text-foreground">Featured Stays</h2>
             <Link href="/hotels" className="text-primary hover:text-primary-dark font-medium flex items-center group">
@@ -161,31 +161,31 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
 
           <div className="grid grid-cols-12 gap-8">
             {featuredHotels.slice(0, 3).map((hotel, i) => (
-               <motion.div 
-                 key={hotel.id}
-                 initial={{ opacity: 0, y: 30 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ delay: i * 0.15 }}
-                 className={cn(
-                   i === 0 ? "col-span-8" : "col-span-4"
-                 )}
-               >
-                 <HotelCard hotel={hotel} />
-               </motion.div>
+              <motion.div
+                key={hotel.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className={cn(
+                  i === 0 ? "col-span-8" : "col-span-4"
+                )}
+              >
+                <HotelCard hotel={hotel} />
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
-      
+
       {/* ── Opinionated Listings: Cars ────────────────────────────────────── */}
       <section className="py-24 bg-background">
         <div className="container-base">
           <motion.div
-             initial={{ opacity: 0 }}
-             whileInView={{ opacity: 1 }}
-             viewport={{ once: true }}
-             className="border-b border-foreground/10 pb-10 mb-16 flex justify-between items-end"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="border-b border-foreground/10 pb-10 mb-16 flex justify-between items-end"
           >
             <h2 className="font-heading text-5xl text-foreground">The Fleet</h2>
             <Link href="/cars" className="text-primary hover:text-primary-dark font-medium flex items-center group">
@@ -195,18 +195,18 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
 
           <div className="grid grid-cols-12 gap-8">
             {featuredCars.slice(0, 3).map((car, i) => (
-               <motion.div 
-                 key={car.id}
-                 initial={{ opacity: 0, y: 30 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ delay: i * 0.15 }}
-                 className={cn(
-                   i === 2 ? "col-span-8" : "col-span-4"
-                 )}
-               >
-                 <CarCard car={car} />
-               </motion.div>
+              <motion.div
+                key={car.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15 }}
+                className={cn(
+                  i === 2 ? "col-span-8" : "col-span-4"
+                )}
+              >
+                <CarCard car={car} />
+              </motion.div>
             ))}
           </div>
         </div>
