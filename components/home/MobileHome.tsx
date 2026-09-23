@@ -22,13 +22,16 @@ export function MobileHome({ destinations, featuredHotels, featuredCars }: Mobil
     <div className="md:hidden bg-background min-h-screen pb-safe">
       {/* ── Native App Hero ─────────────────────────────────────── */}
       <section className="relative h-[60vh] w-full rounded-b-3xl overflow-hidden shadow-sm">
-        <Image
-          src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1000"
-          alt="Sri Lanka"
-          fill
-          className="object-cover"
-          priority
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/hero-fallback.jpeg"
+          className="absolute inset-0 object-cover w-full h-full"
+        >
+          <source src="/Hero-bg-video.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
         
         {/* Top minimal bar space (placeholder for status bar area) */}

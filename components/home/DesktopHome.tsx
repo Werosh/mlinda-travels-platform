@@ -65,7 +65,7 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
                 <br />
                 <span className="italic font-light text-white/90">Curated.</span>
               </h1>
-              <p className="text-white/90 text-[20px] md:text-[26px] lg:text-[30px] mt-8 max-w-2xl font-serif font-light leading-snug drop-shadow-lg">
+              <p className="text-white/90 text-base md:text-xl lg:text-2xl mt-8 max-w-xl font-serif font-light leading-snug drop-shadow-lg">
                 An exclusive collection of Sri Lanka's finest stays, premium vehicles, and exceptional flights designed for the discerning traveler.
               </p>
             </motion.div>
