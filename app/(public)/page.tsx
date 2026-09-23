@@ -14,32 +14,32 @@ const destinations = [
   {
     city: 'Colombo',
     subtitle: 'The Vibrant Capital',
-    image: 'https://images.unsplash.com/photo-1566296314736-6eaac1ca0cb9?w=600',
+    image: 'https://hblimg.mmtcdn.com/content/hubble/img/tvdestinationimages/mmt/activities/m_Colombo_tv_destination_img_1_l_553_1000.jpg',
   },
   {
     city: 'Galle',
     subtitle: 'Colonial Charm & Beaches',
-    image: 'https://images.unsplash.com/photo-1588464009076-6f19a3d0d17c?w=600',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQB0JQP-tUGSgltOJqmyUNyQE-k--oaJHYA80T-3q7Z9w&s=10',
   },
   {
     city: 'Nuwara Eliya',
     subtitle: 'Tea Country Highlands',
-    image: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=600',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1bE1OmvgrzvvxA479IN0jdA1u3e2pvE3bHOWq5MyykquzCX_7vszyWZ8&s=10',
   },
   {
     city: 'Yala',
     subtitle: 'Wildlife & Wilderness',
-    image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7htlP_yN-BT5_WK009nW7kf7v0sbCxcoTBUd0zosmeWYPE9pZ-KbS-S0&s=10',
   },
   {
     city: 'Kandy',
     subtitle: 'Cultural Heart',
-    image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600',
+    image: 'https://cdn.getyourguide.com/image/format=auto%2Cfit=crop%2Cgravity=auto%2Cquality=60%2Cwidth=400%2Cheight=265%2Cdpr=2/tour_img/814969a60a962449758241b506e010f2c69c83002c9b00726687587d90e0af5c.jpeg',
   },
   {
     city: 'Negombo',
     subtitle: 'Coastal Gateway',
-    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600',
+    image: 'https://content.r9cdn.net/rimg/dimg/16/71/1bacba85-city-46478-169110981a8.jpg?width=1366&height=768&crop=true',
   },
 ]
 
@@ -51,7 +51,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <DesktopHome 
+      <DesktopHome
         destinations={destinations}
         featuredHotels={featuredHotels}
         featuredCars={featuredCars}

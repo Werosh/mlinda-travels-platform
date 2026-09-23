@@ -95,7 +95,7 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
           >
             <div className="max-w-2xl">
               <h2 className="font-heading text-5xl md:text-7xl leading-[0.9] text-foreground tracking-tighter">
-                The <span className="italic font-light text-muted-foreground ml-2">Portfolio</span>
+                Curated <span className="italic font-light text-muted-foreground ml-2">Escapes</span>
               </h2>
             </div>
             <p className="text-lg md:text-xl text-muted-foreground font-light max-w-sm leading-relaxed">
@@ -109,49 +109,48 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
           <div className="flex h-[60vh] md:h-[75vh] w-full gap-4">
             {destinations.slice(0, 5).map((dest, i) => (
               <motion.div
+                layout
                 key={dest.city}
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative flex-1 hover:flex-[4] transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden rounded-[2rem] cursor-pointer shadow-lg"
+                transition={{ delay: i * 0.1, duration: 0.8, ease: "easeOut" }}
+                className="group relative flex-1 hover:flex-[3] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-[2rem] cursor-pointer shadow-lg will-change-[flex]"
               >
                 <Link href={`/hotels?city=${dest.city}`} className="block w-full h-full">
                   <Image
                     src={dest.image}
                     alt={dest.city}
                     fill
-                    className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                    className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   {/* Base gradient and hover darkening */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-700" />
                   
-                  {/* Content Container */}
-                  <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-end">
+                  {/* Content Container - Fixed width to prevent layout thrashing on expand */}
+                  <div className="absolute bottom-0 left-0 p-6 md:p-10 flex flex-col justify-end w-[400px]">
                     
                     <div className="flex items-center gap-4 mb-4">
-                      <span className="text-white/90 font-mono text-sm tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                      <span className="text-white/90 font-mono text-sm tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shrink-0">
                         0{i + 1}
                       </span>
-                      <div className="h-[1px] bg-white/30 flex-1 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] delay-100" />
+                      <div className="h-[1px] bg-white/30 w-16 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] delay-100" />
                     </div>
                     
-                    <div className="flex flex-col">
-                      <h3 className="font-heading text-3xl md:text-5xl text-white tracking-tight whitespace-nowrap origin-left transition-transform duration-700 drop-shadow-lg">
+                    <div className="flex flex-col relative h-[120px] justify-end">
+                      <h3 className="font-heading text-3xl md:text-5xl text-white tracking-tight whitespace-nowrap drop-shadow-lg transition-transform duration-700 ease-out group-hover:-translate-y-24">
                         {dest.city}
                       </h3>
                       
-                      {/* Subtitle reveals by expanding grid-rows */}
-                      <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                        <div className="overflow-hidden">
-                          <p className="text-white/80 font-serif font-light text-lg mt-3 pr-4 md:pr-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-300">
-                            {dest.subtitle}
-                          </p>
-                          
-                          <div className="mt-6 flex items-center text-white font-medium text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-700 delay-400 translate-y-4 group-hover:translate-y-0">
-                            Explore Location <ArrowRight className="w-4 h-4 ml-2" />
-                          </div>
+                      {/* Subtitle positioned absolutely to avoid affecting layout */}
+                      <div className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 translate-y-8 group-hover:translate-y-0 transition-all duration-700 ease-out delay-75 pointer-events-none group-hover:pointer-events-auto">
+                        <p className="text-white/90 font-serif font-light text-lg pr-4">
+                          {dest.subtitle}
+                        </p>
+                        
+                        <div className="mt-4 flex items-center text-white font-medium text-sm tracking-widest uppercase">
+                          Explore Location <ArrowRight className="w-4 h-4 ml-2" />
                         </div>
                       </div>
                     </div>
