@@ -11,7 +11,7 @@
 -- ============================================================
 INSERT INTO public.hotels (id, name, description, address, city, country, lat, lng, star_rating, amenities, cover_image_url, gallery_urls, is_active) VALUES
 
-('h1000000-0000-0000-0000-000000000001',
+('10000000-0000-0000-0000-000000000001',
  'The Galle Face Grand',
  'A landmark colonial-era hotel overlooking the Indian Ocean, blending timeless heritage with modern luxury. Wake up to panoramic ocean views and indulge in world-class dining.',
  'Galle Face, Colombo 3',
@@ -23,7 +23,7 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
  ARRAY['https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800','https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800','https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800','https://images.unsplash.com/photo-1615460549969-36fa19521a4f?w=800'],
  TRUE),
 
-('h1000000-0000-0000-0000-000000000002',
+('10000000-0000-0000-0000-000000000002',
  'Jetwing Blue',
  'A sophisticated oceanfront resort in Negombo with stunning blue-toned interiors that mirror the sea outside. Perfect for beach lovers and water-sports enthusiasts.',
  'Ethukala, Negombo',
@@ -35,7 +35,7 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
  ARRAY['https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800','https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800','https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800'],
  TRUE),
 
-('h1000000-0000-0000-0000-000000000003',
+('10000000-0000-0000-0000-000000000003',
  'Wild Coast Tented Lodge',
  'An extraordinary eco-luxury experience in Yala with safari-style tented suites nestled in the wilderness. Elephants roam freely just meters from your private plunge pool.',
  'Yala National Park Buffer Zone',
@@ -47,7 +47,7 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
  ARRAY['https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800','https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800','https://images.unsplash.com/photo-1533760881669-80db4d7b341c?w=800'],
  TRUE),
 
-('h1000000-0000-0000-0000-000000000004',
+('10000000-0000-0000-0000-000000000004',
  'Amangalla',
  'A fortress-turned-sanctuary within the walls of Galle Dutch Fort. This iconic hotel blends Dutch colonial architecture with serene tropical gardens and exceptional service.',
  '10 Church Street, Galle Fort',
@@ -59,7 +59,7 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
  ARRAY['https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800','https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800','https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800'],
  TRUE),
 
-('h1000000-0000-0000-0000-000000000005',
+('10000000-0000-0000-0000-000000000005',
  'Heritance Tea Factory',
  'An iconic hotel built within a restored Victorian tea factory high in the Nuwara Eliya hills. Surrounded by lush tea estates with misty mountain views and cool highland air.',
  'Kandapola, Nuwara Eliya',
@@ -71,7 +71,7 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
  ARRAY['https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=800','https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800','https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=800'],
  TRUE),
 
-('h1000000-0000-0000-0000-000000000006',
+('10000000-0000-0000-0000-000000000006',
  'Cinnamon Grand Colombo',
  'The heartbeat of Colombo city - a contemporary luxury hotel combining business efficiency with leisure elegance. Walking distance from Colombo''s top attractions and shopping.',
  '77 Galle Road, Colombo 3',
@@ -89,77 +89,77 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
 INSERT INTO public.room_types (id, hotel_id, name, description, max_guests, base_price, total_rooms, images) VALUES
 
 -- Galle Face Grand rooms
-('rt000001-0000-0000-0000-000000000001', 'h1000000-0000-0000-0000-000000000001',
+('20000001-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001',
  'Ocean View Deluxe', 'Sweeping views of the Indian Ocean with a king bed, marble bathroom, and private balcony.',
  2, 280.00, 15,
  ARRAY['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800','https://images.unsplash.com/photo-1615460549969-36fa19521a4f?w=800']),
 
-('rt000001-0000-0000-0000-000000000002', 'h1000000-0000-0000-0000-000000000001',
+('20000001-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001',
  'Heritage Suite', 'Expansive suite with colonial furnishings, separate living room, and panoramic ocean terrace.',
  3, 520.00, 6,
  ARRAY['https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800','https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800']),
 
-('rt000001-0000-0000-0000-000000000003', 'h1000000-0000-0000-0000-000000000001',
+('20000001-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000001',
  'Standard Garden View', 'Comfortable room with garden views and all modern amenities.',
  2, 175.00, 30,
  ARRAY['https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800']),
 
 -- Jetwing Blue rooms
-('rt000002-0000-0000-0000-000000000001', 'h1000000-0000-0000-0000-000000000002',
+('20000002-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002',
  'Superior Sea View', 'Bright room with direct sea view and private balcony, steps from the beach.',
  2, 195.00, 20,
  ARRAY['https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800']),
 
-('rt000002-0000-0000-0000-000000000002', 'h1000000-0000-0000-0000-000000000002',
+('20000002-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002',
  'Family Beach Suite', 'Spacious suite accommodating up to 4 guests with bunk beds and ocean-facing patio.',
  4, 340.00, 8,
  ARRAY['https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800']),
 
 -- Wild Coast rooms
-('rt000003-0000-0000-0000-000000000001', 'h1000000-0000-0000-0000-000000000003',
+('20000003-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000003',
  'Bubble Suite', 'Transparent curved tent with 270° wildlife views, private plunge pool, and butler service.',
  2, 850.00, 4,
  ARRAY['https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800']),
 
-('rt000003-0000-0000-0000-000000000002', 'h1000000-0000-0000-0000-000000000003',
+('20000003-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000003',
  'Tented Bush Villa', 'Luxury canvas villa with wraparound deck overlooking a waterhole visited by elephants at dawn.',
  2, 620.00, 8,
  ARRAY['https://images.unsplash.com/photo-1533760881669-80db4d7b341c?w=800']),
 
 -- Amangalla rooms
-('rt000004-0000-0000-0000-000000000001', 'h1000000-0000-0000-0000-000000000004',
+('20000004-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000004',
  'Galle Suite', 'A spacious suite in the historic fort building with courtyard garden access and four-poster bed.',
  2, 680.00, 5,
  ARRAY['https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800']),
 
-('rt000004-0000-0000-0000-000000000002', 'h1000000-0000-0000-0000-000000000004',
+('20000004-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000004',
  'Garden Room', 'Elegant colonial-style room with direct garden access and private verandah.',
  2, 420.00, 10,
  ARRAY['https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800']),
 
 -- Heritance Tea Factory rooms
-('rt000005-0000-0000-0000-000000000001', 'h1000000-0000-0000-0000-000000000005',
+('20000005-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000005',
  'Planters Suite', 'The most coveted suite in the factory building with Victorian fireplace and sweeping tea estate views.',
  2, 380.00, 4,
  ARRAY['https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800']),
 
-('rt000005-0000-0000-0000-000000000002', 'h1000000-0000-0000-0000-000000000005',
+('20000005-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000005',
  'Standard Luxury Room', 'Charming room with tea estate views and working fireplace, reclaimed factory decor.',
  2, 220.00, 18,
  ARRAY['https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=800']),
 
 -- Cinnamon Grand rooms
-('rt000006-0000-0000-0000-000000000001', 'h1000000-0000-0000-0000-000000000006',
+('20000006-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000006',
  'City View Deluxe', 'Contemporary deluxe room with city skyline views, king bed, and rainfall shower.',
  2, 210.00, 40,
  ARRAY['https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800']),
 
-('rt000006-0000-0000-0000-000000000002', 'h1000000-0000-0000-0000-000000000006',
+('20000006-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000006',
  'Executive Club Floor', 'Upgraded room on the executive floor with lounge access, breakfast, and evening cocktails.',
  2, 310.00, 20,
  ARRAY['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800']),
 
-('rt000006-0000-0000-0000-000000000003', 'h1000000-0000-0000-0000-000000000006',
+('20000006-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000006',
  'Grand Suite', 'The pinnacle of city luxury - a massive suite with separate dining, home theater, and Colombo skyline terrace.',
  4, 580.00, 5,
  ARRAY['https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800']);
@@ -182,49 +182,49 @@ ON CONFLICT (room_type_id, date) DO NOTHING;
 -- ============================================================
 INSERT INTO public.cars (id, make, model, year, category, transmission, seats, price_per_day, location, images, features, is_active) VALUES
 
-('c1000000-0000-0000-0000-000000000001',
+('30000000-0000-0000-0000-000000000001',
  'Toyota', 'Aqua', 2022, 'economy', 'automatic', 5, 45.00, 'Colombo',
  ARRAY['https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800'],
  ARRAY['bluetooth','backup camera','fuel efficient','usb charging','air conditioning'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000002',
+('30000000-0000-0000-0000-000000000002',
  'Honda', 'Fit', 2021, 'economy', 'automatic', 5, 42.00, 'Negombo',
  ARRAY['https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800'],
  ARRAY['bluetooth','air conditioning','usb charging','good fuel economy'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000003',
+('30000000-0000-0000-0000-000000000003',
  'Toyota', 'Prius', 2023, 'hybrid', 'automatic', 5, 65.00, 'Colombo',
  ARRAY['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800'],
  ARRAY['hybrid','lane assist','adaptive cruise','apple carplay','android auto','360 camera','sunroof'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000004',
+('30000000-0000-0000-0000-000000000004',
  'Toyota', 'Land Cruiser', 2022, 'suv', 'automatic', 7, 120.00, 'Colombo',
  ARRAY['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800'],
  ARRAY['4WD','7 seats','roof rack','off-road','bluetooth','leather seats','sunroof','apple carplay'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000005',
+('30000000-0000-0000-0000-000000000005',
  'Mitsubishi', 'Outlander', 2021, 'suv', 'automatic', 7, 95.00, 'Kandy',
  ARRAY['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800'],
  ARRAY['7 seats','bluetooth','backup camera','air conditioning','roof rails','cruise control'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000006',
+('30000000-0000-0000-0000-000000000006',
  'BMW', '5 Series', 2023, 'luxury', 'automatic', 5, 180.00, 'Colombo',
  ARRAY['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800'],
  ARRAY['leather seats','sunroof','harman kardon audio','adaptive cruise','lane assist','parking assist','apple carplay','heated seats'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000007',
+('30000000-0000-0000-0000-000000000007',
  'Mercedes-Benz', 'E-Class', 2022, 'luxury', 'automatic', 5, 195.00, 'Colombo',
  ARRAY['https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800'],
  ARRAY['leather seats','panoramic sunroof','burmester audio','massage seats','ambient lighting','apple carplay','driver assistance package'],
  TRUE),
 
-('c1000000-0000-0000-0000-000000000008',
+('30000000-0000-0000-0000-000000000008',
  'Suzuki', 'Jimny', 2022, 'suv', 'manual', 4, 70.00, 'Nuwara Eliya',
  ARRAY['https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=800'],
  ARRAY['4WD','compact','off-road','bluetooth','easy to park','great for mountains'],
