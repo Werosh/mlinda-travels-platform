@@ -28,6 +28,7 @@ export default function RegisterPage() {
     setServerError(null)
     const formData = new FormData()
     formData.append('fullName', data.fullName)
+    formData.append('phone', data.phone)
     formData.append('email', data.email)
     formData.append('password', data.password)
     const result = await signUp(formData)
@@ -76,6 +77,22 @@ export default function RegisterPage() {
           />
           {errors.fullName && (
             <p className="text-xs text-destructive" role="alert">{errors.fullName.message}</p>
+          )}
+        </div>
+
+        {/* Phone */}
+        <div className="space-y-1.5">
+          <Label htmlFor="phone">Phone number</Label>
+          <Input
+            id="phone"
+            type="tel"
+            placeholder="+94 77 123 4567"
+            autoComplete="tel"
+            className="h-11 rounded-xl"
+            {...register('phone')}
+          />
+          {errors.phone && (
+            <p className="text-xs text-destructive" role="alert">{errors.phone.message}</p>
           )}
         </div>
 

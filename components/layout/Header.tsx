@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { MapPin, LogIn, User, LogOut, ChevronDown, Heart } from 'lucide-react'
+import { MapPin, LogIn, User, LogOut, ChevronDown, Heart, Calendar, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -122,53 +122,62 @@ export function Header() {
               <DropdownMenuTrigger render={<Button
                   variant="ghost"
                   className={cn(
-                    "flex items-center gap-2 px-3 rounded-xl hover:bg-transparent",
-                    isTransparentPage && !scrolled ? "hover:bg-white/10" : ""
+                    "flex items-center gap-2 px-1.5 py-1.5 h-auto rounded-full border shadow-sm transition-all duration-300",
+                    isTransparentPage && !scrolled 
+                      ? "border-white/20 bg-white/10 hover:bg-white/20 hover:border-white/30" 
+                      : "border-border/50 bg-background hover:bg-muted/50 hover:shadow-md"
                   )}
                   aria-label="User menu"
                 />}>
-                  <Avatar className="w-8 h-8 border-2 border-primary/20">
+                  <Avatar className="w-8 h-8 border border-primary/10 shadow-sm">
                     <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? 'User'} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                    <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
                   <span
                     className={cn(
-                      'text-sm font-medium max-w-[100px] truncate',
+                      'text-sm font-semibold max-w-[100px] truncate pl-0.5',
                       isTransparentPage && !scrolled ? 'text-white' : 'text-foreground'
                     )}
                   >
                     {profile.full_name?.split(' ')[0] ?? 'Account'}
                   </span>
-                  <ChevronDown className={cn("w-4 h-4 opacity-60", isTransparentPage && !scrolled ? 'text-white' : 'text-foreground')} />
+                  <ChevronDown className={cn("w-4 h-4 opacity-70 pr-1", isTransparentPage && !scrolled ? 'text-white' : 'text-foreground')} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52 rounded-xl p-1">
-                <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="rounded-lg">
-                    <User className="w-4 h-4 mr-2" />
+              <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 shadow-xl border-border/40 bg-white/95 backdrop-blur-xl">
+                <div className="flex flex-col gap-0.5 p-2 mb-1 border-b border-border/40">
+                  <p className="font-semibold text-sm text-foreground truncate">{profile.full_name || 'My Account'}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{profile.role || 'User'}</p>
+                </div>
+                
+                <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-muted focus:bg-muted hover:text-foreground focus:text-foreground">
+                    <User className="w-4 h-4 mr-3 text-muted-foreground group-hover:text-foreground group-focus:text-foreground transition-colors" />
                     My Account
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="rounded-lg">
+                <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-muted focus:bg-muted hover:text-foreground focus:text-foreground">
+                    <Calendar className="w-4 h-4 mr-3 text-muted-foreground group-hover:text-foreground group-focus:text-foreground transition-colors" />
                     My Bookings
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="rounded-lg">
-                    <Heart className="w-4 h-4 mr-2" />
+                <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-muted focus:bg-muted hover:text-foreground focus:text-foreground">
+                    <Heart className="w-4 h-4 mr-3 text-muted-foreground group-hover:text-foreground group-focus:text-foreground transition-colors" />
                     My Favorites
                 </DropdownMenuItem>
                 {profile.role === 'admin' && (
                   <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer text-primary" />} className="rounded-lg">
+                    <DropdownMenuSeparator className="my-1" />
+                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer text-primary" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-primary/10 focus:bg-primary/10 hover:text-primary focus:text-primary">
+                        <Shield className="w-4 h-4 mr-3" />
                         Admin Panel
                     </DropdownMenuItem>
                   </>
                 )}
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="my-1" />
                 <DropdownMenuItem
-                  className="rounded-lg text-destructive cursor-pointer"
+                  className="rounded-xl p-2.5 text-sm font-medium text-destructive cursor-pointer transition-colors hover:bg-destructive/10 focus:bg-destructive/10"
                   onClick={() => signOut()}
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
+                  <LogOut className="w-4 h-4 mr-3" />
                   Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>

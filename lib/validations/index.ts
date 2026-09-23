@@ -3,6 +3,7 @@ import { z } from 'zod'
 // ── Auth Schemas ──────────────────────────────────────────────
 export const signUpSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  phone: z.string().regex(/^\+?[0-9\s\-()]{7,20}$/, 'Please enter a valid phone number'),
   email: z.string().email('Please enter a valid email'),
   password: z
     .string()
