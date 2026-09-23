@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const navSections = [
+export const navSections = [
   {
     label: 'Overview',
     items: [
@@ -51,7 +51,8 @@ export function AdminSidebar() {
     <aside
       className={cn(
         'flex-shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-200',
-        collapsed ? 'w-16' : 'w-60'
+        collapsed ? 'w-16' : 'w-60',
+        'hidden md:flex'
       )}
       aria-label="Admin navigation"
     >

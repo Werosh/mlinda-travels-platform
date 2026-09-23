@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Bell, LogOut, ChevronRight } from 'lucide-react'
+import { Bell, LogOut, ChevronRight, Menu } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 import { signOut } from '@/lib/auth/actions'
+import { navSections } from '@/components/layout/AdminSidebar'
+import { cn } from '@/lib/utils'
 
 interface AdminHeaderProps {
   profile: {
@@ -39,25 +42,81 @@ export function AdminHeader({ profile }: AdminHeaderProps) {
     : 'A'
 
   return (
-    <header className="h-16 bg-white border-b border-border flex items-center justify-between px-6 flex-shrink-0">
-      {/* Breadcrumbs */}
-      <nav className="flex items-center gap-1 text-sm" aria-label="Breadcrumb">
-        {breadcrumbs.map((crumb, i) => (
-          <div key={crumb.href} className="flex items-center gap-1">
-            {i > 0 && <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
-            {crumb.isLast ? (
-              <span className="font-semibold text-foreground">{crumb.label}</span>
-            ) : (
-              <Link href={crumb.href} className="text-muted-foreground hover:text-foreground capitalize">
-                {crumb.label}
+    <header className="h-16 bg-white border-b border-border flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
+      <div className="flex items-center gap-3">
+        {/* Mobile Nav Trigger */}
+        <Sheet>
+          <SheetTrigger
+            render={
+              <Button variant="ghost" size="icon" className="md:hidden" aria-label="Toggle Menu" />
+            }
+          >
+            <Menu className="w-5 h-5" />
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-0">
+            <SheetTitle className="sr-only">Admin Navigation</SheetTitle>
+            <div className="h-16 flex items-center border-b border-sidebar-border px-4">
+              <Link href="/admin" className="flex items-center gap-2 group">
+                <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-border/20 bg-white">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/logo.jpeg" alt="Mlinda Travels" className="w-full h-full object-cover" />
+                </div>
+                <span className="font-heading font-semibold text-base tracking-tight text-foreground">
+                  Mlinda<span className="text-primary">.</span>
+                </span>
               </Link>
-            )}
-          </div>
-        ))}
-      </nav>
+            </div>
+            <nav className="flex-1 overflow-y-auto py-4 no-scrollbar max-h-[calc(100vh-4rem)]">
+              {navSections.map((section) => (
+                <div key={section.label} className="mb-4">
+                  <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                    {section.label}
+                  </p>
+                  {section.items.map((item) => {
+                    const isActive = item.href === '/admin'
+                      ? pathname === '/admin'
+                      : pathname.startsWith(item.href)
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          'flex items-center gap-3 mx-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
+                          isActive
+                            ? 'bg-sidebar-accent text-sidebar-primary'
+                            : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-primary'
+                        )}
+                      >
+                        <item.icon className="w-4 h-4 flex-shrink-0" />
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+                </div>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
+
+        {/* Breadcrumbs */}
+        <nav className="hidden sm:flex items-center gap-1 text-sm" aria-label="Breadcrumb">
+          {breadcrumbs.map((crumb, i) => (
+            <div key={crumb.href} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
+              {crumb.isLast ? (
+                <span className="font-semibold text-foreground">{crumb.label}</span>
+              ) : (
+                <Link href={crumb.href} className="text-muted-foreground hover:text-foreground capitalize">
+                  {crumb.label}
+                </Link>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
 
       {/* Right side */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         <Button variant="ghost" size="icon" className="rounded-xl relative" aria-label="Notifications">
           <Bell className="w-4 h-4" />
         </Button>
