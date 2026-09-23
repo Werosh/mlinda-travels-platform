@@ -31,59 +31,43 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
   return (
     <div className="hidden md:block bg-background min-h-screen pb-24" ref={containerRef}>
       {/* ── Editorial Hero ─────────────────────────────────────── */}
-      <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-[#F4F4F2] pt-24 pb-12">
+      <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden pt-24 pb-12">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/hero-fallback.jpeg"
+            className="object-cover w-full h-full"
+          >
+            <source src="/Hero-bg-video.mp4" type="video/mp4" />
+          </video>
+          {/* Dark Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+
         <div className="container-base relative z-10 flex-1 flex flex-col justify-center">
           
           <div className="grid grid-cols-12 gap-8 items-center h-full relative">
             
-            {/* Massive Typography - Left */}
+            {/* Massive Typography - Centered/Left */}
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="col-span-12 lg:col-span-7 z-20 mix-blend-difference"
+              className="col-span-12 lg:col-span-10 z-20"
             >
-              <h1 className="font-heading text-[11vw] lg:text-[8vw] leading-[0.85] tracking-tighter text-[#EAE8E3]">
+              <h1 className="font-heading text-[11vw] lg:text-[8vw] leading-[0.85] tracking-tighter text-white">
                 The Island
                 <br />
-                <span className="italic font-light text-primary-light">Curated.</span>
+                <span className="italic font-light text-white/90">Curated.</span>
               </h1>
-              <p className="text-[#EAE8E3]/80 text-xl lg:text-2xl mt-12 max-w-lg font-light leading-relaxed">
-                An exclusive collection of Sri Lanka's finest stays and premium vehicles, designed for the discerning traveler.
+              <p className="text-white/80 text-xl lg:text-2xl mt-8 max-w-xl font-light leading-relaxed">
+                An exclusive collection of Sri Lanka's finest stays, premium vehicles, and exceptional flights designed for the discerning traveler.
               </p>
             </motion.div>
-
-            {/* Asymmetrical Image Gallery - Right */}
-            <div className="col-span-12 lg:col-span-5 relative h-[60vh] lg:h-[80vh] hidden md:block">
-              {/* Image 1: Main Portrait */}
-              <motion.div
-                style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '15%']) }}
-                className="absolute top-[10%] right-[10%] w-[70%] h-[80%] rounded-[2rem] overflow-hidden shadow-2xl z-10"
-              >
-                <Image
-                  src="https://images.unsplash.com/photo-1546708973-c19582772590?w=1200"
-                  alt="Sri Lanka Coast"
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-1000 ease-out"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </motion.div>
-              
-              {/* Image 2: Small Offset Square */}
-              <motion.div
-                style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '-25%']) }}
-                className="absolute bottom-[5%] left-[5%] w-[45%] aspect-square rounded-[2rem] overflow-hidden shadow-2xl z-20 border-4 border-[#F4F4F2]"
-              >
-                <Image
-                  src="https://images.unsplash.com/photo-1588464009076-6f19a3d0d17c?w=600"
-                  alt="Galle Fort"
-                  fill
-                  className="object-cover"
-                  sizes="25vw"
-                />
-              </motion.div>
-            </div>
           </div>
 
           {/* Integrated Search Widget Pill at the Bottom */}
@@ -91,15 +75,12 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6, ease: 'easeOut' }}
-            className="w-full mt-16 lg:mt-0 relative z-30"
+            className="w-full mt-16 relative z-30"
           >
             <SearchWidget variant="hero" />
           </motion.div>
           
         </div>
-        
-        {/* Subtle Background Pattern/Color */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#F4F4F2] to-[#EAE8E3]" />
       </section>
 
       {/* ── Asymmetric Destinations ──────────────────────────────── */}

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
-import { Calendar, MapPin, Users, Car, Building2, Search } from 'lucide-react'
+import { Calendar, MapPin, Users, Car, Building2, Search, Plane } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -23,7 +23,7 @@ interface SearchWidgetProps {
 
 export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps) {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<'hotels' | 'cars'>('hotels')
+  const [activeTab, setActiveTab] = useState<'hotels' | 'cars' | 'flights'>('flights')
   const [location, setLocation] = useState('')
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
   const [guests, setGuests] = useState(2)
@@ -38,11 +38,17 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
       if (dateRange?.to) params.set('checkOut', format(dateRange.to, 'yyyy-MM-dd'))
       params.set('guests', String(guests))
       router.push(`/hotels?${params.toString()}`)
-    } else {
+    } else if (activeTab === 'cars') {
       if (location) params.set('location', location)
       if (dateRange?.from) params.set('pickupDate', format(dateRange.from, 'yyyy-MM-dd'))
       if (dateRange?.to) params.set('returnDate', format(dateRange.to, 'yyyy-MM-dd'))
       router.push(`/cars?${params.toString()}`)
+    } else if (activeTab === 'flights') {
+      if (location) params.set('origin', location)
+      if (dateRange?.from) params.set('departureDate', format(dateRange.from, 'yyyy-MM-dd'))
+      if (dateRange?.to) params.set('returnDate', format(dateRange.to, 'yyyy-MM-dd'))
+      params.set('passengers', String(guests))
+      router.push(`/flights?${params.toString()}`)
     }
   }
 
@@ -54,22 +60,31 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
         {/* Minimal Tab Toggle */}
         <div className="flex items-center gap-6 mb-6">
           <button
+            onClick={() => setActiveTab('flights')}
+            className={cn(
+              "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2 flex items-center gap-2",
+              activeTab === 'flights' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <Plane className="w-4 h-4" /> Flights
+          </button>
+          <button
             onClick={() => setActiveTab('hotels')}
             className={cn(
-              "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2",
+              "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2 flex items-center gap-2",
               activeTab === 'hotels' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
-            Stays
+            <Building2 className="w-4 h-4" /> Stays
           </button>
           <button
             onClick={() => setActiveTab('cars')}
             className={cn(
-              "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2",
+              "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2 flex items-center gap-2",
               activeTab === 'cars' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
-            Vehicles
+            <Car className="w-4 h-4" /> Vehicles
           </button>
         </div>
 
@@ -80,7 +95,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
             <MapPin className="w-4 h-4 text-primary mr-3" />
             <input
               type="text"
-              placeholder={activeTab === 'hotels' ? "Destination" : "Pickup Location"}
+              placeholder={activeTab === 'hotels' ? "Destination" : activeTab === 'cars' ? "Pickup Location" : "Origin / Destination"}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground font-medium text-sm"
@@ -99,7 +114,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
                       format(dateRange.from, 'MMM d, yyyy')
                     )
                   ) : (
-                    activeTab === 'hotels' ? 'Dates' : 'Pickup & Return'
+                    activeTab === 'hotels' ? 'Dates' : activeTab === 'cars' ? 'Pickup & Return' : 'Departure & Return'
                   )}
                 </span>
               </PopoverTrigger>
@@ -109,7 +124,6 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
                   selected={dateRange}
                   onSelect={(range) => {
                     setDateRange(range)
-                    if (range?.from && range?.to) setDateOpen(false)
                   }}
                   disabled={{ before: new Date() }}
                   numberOfMonths={2}
@@ -119,7 +133,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
             </Popover>
           </div>
 
-          {activeTab === 'hotels' && (
+          {(activeTab === 'hotels' || activeTab === 'flights') && (
             <div className="flex-1 flex items-center px-6">
               <Users className="w-4 h-4 text-primary mr-3" />
               <select
@@ -152,8 +166,11 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
   // Default Inline Variant
   return (
     <div className={cn('bg-white border border-border shadow-sm rounded-2xl p-4 md:p-6', className)}>
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'hotels' | 'cars')} className="mb-5">
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="mb-5">
         <TabsList className="h-10 bg-muted/60 rounded-xl p-1 gap-1">
+          <TabsTrigger value="flights" className="rounded-lg flex items-center gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white text-sm">
+            <Plane className="w-3.5 h-3.5" /> Flights
+          </TabsTrigger>
           <TabsTrigger value="hotels" className="rounded-lg flex items-center gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white text-sm">
             <Building2 className="w-3.5 h-3.5" /> Hotels
           </TabsTrigger>
@@ -167,7 +184,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
         <div className="flex-1 relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           <Input
-            placeholder={activeTab === 'hotels' ? 'Where are you going?' : 'Pickup location'}
+            placeholder={activeTab === 'hotels' ? 'Where are you going?' : activeTab === 'cars' ? 'Pickup location' : 'Origin / Destination'}
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             className="pl-9 h-11 rounded-xl border-border focus:border-primary bg-background/80"
@@ -183,7 +200,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
               {dateRange?.from ? (
                 dateRange.to ? <span className="text-sm truncate">{format(dateRange.from, 'MMM d')} – {format(dateRange.to, 'MMM d')}</span> : <span className="text-sm">{format(dateRange.from, 'MMM d, yyyy')}</span>
               ) : (
-                <span className="text-sm">{activeTab === 'hotels' ? 'Check-in → Check-out' : 'Pickup → Return'}</span>
+                <span className="text-sm">{activeTab === 'hotels' ? 'Check-in → Check-out' : activeTab === 'cars' ? 'Pickup → Return' : 'Departure → Return'}</span>
               )}
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="start">
@@ -192,7 +209,6 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
               selected={dateRange}
               onSelect={(range) => {
                 setDateRange(range)
-                if (range?.from && range?.to) setDateOpen(false)
               }}
               disabled={{ before: new Date() }}
               numberOfMonths={2}
@@ -201,7 +217,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
           </PopoverContent>
         </Popover>
 
-        {activeTab === 'hotels' && (
+        {(activeTab === 'hotels' || activeTab === 'flights') && (
           <div className="relative md:w-40">
             <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <select
