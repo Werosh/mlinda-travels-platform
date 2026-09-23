@@ -61,8 +61,7 @@ export function Header() {
           </div>
           <span
             className={cn(
-              'font-heading font-semibold text-xl tracking-tight transition-colors',
-              isTransparentPage && !scrolled ? 'text-white' : 'text-foreground'
+              'font-heading font-semibold text-xl tracking-tight transition-colors text-foreground'
             )}
           >
             Mlinda<span className="text-primary">.</span>
@@ -80,7 +79,7 @@ export function Header() {
                 pathname.startsWith(link.href)
                   ? 'text-primary bg-primary/10'
                   : isTransparentPage && !scrolled
-                  ? 'text-white/90 hover:text-white hover:bg-white/10'
+                  ? 'text-foreground/90 hover:text-foreground hover:bg-black/5'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               )}
             >
@@ -108,13 +107,12 @@ export function Header() {
                   </Avatar>
                   <span
                     className={cn(
-                      'text-sm font-medium max-w-[100px] truncate',
-                      isTransparentPage && !scrolled ? 'text-white' : 'text-foreground'
+                      'text-sm font-medium max-w-[100px] truncate text-foreground'
                     )}
                   >
                     {profile.full_name?.split(' ')[0] ?? 'Account'}
                   </span>
-                  <ChevronDown className="w-4 h-4 opacity-60" />
+                  <ChevronDown className="w-4 h-4 opacity-60 text-foreground" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52 rounded-xl p-1">
                 <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="rounded-lg">
@@ -151,7 +149,7 @@ export function Header() {
                 className={cn(
                   'rounded-xl px-5',
                   isTransparentPage && !scrolled
-                    ? 'text-white hover:bg-white/10'
+                    ? 'text-foreground hover:bg-black/5'
                     : ''
                 )}
               >

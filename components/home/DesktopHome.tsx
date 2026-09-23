@@ -31,56 +31,75 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
   return (
     <div className="hidden md:block bg-background min-h-screen pb-24" ref={containerRef}>
       {/* ── Editorial Hero ─────────────────────────────────────── */}
-      <section className="relative h-[90vh] flex items-center overflow-hidden">
-        <motion.div 
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="absolute inset-0 z-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=2000"
-            alt="Sri Lanka aerial view"
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-          />
-          <div className="hero-overlay absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-        </motion.div>
-
-        <div className="relative z-10 container-base flex h-full items-center pt-20">
-          <div className="grid grid-cols-12 gap-8 w-full items-center">
-            {/* Typography Focus */}
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-              className="col-span-7"
-            >
-              <h1 className="font-heading text-white text-[6rem] leading-[0.9] tracking-tighter drop-shadow-lg">
-                Curated
-                <br />
-                <span className="italic font-light text-primary-light/90">Journeys.</span>
-              </h1>
-              <p className="text-white/80 text-xl mt-8 max-w-md font-light leading-relaxed border-l-2 border-primary pl-6 ml-2">
-                An editorial collection of Sri Lanka's finest stays and premium vehicles, designed for the discerning traveler.
-              </p>
-            </motion.div>
-
-            {/* Floating Glass Search Panel */}
+      <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-[#F4F4F2] pt-24 pb-12">
+        <div className="container-base relative z-10 flex-1 flex flex-col justify-center">
+          
+          <div className="grid grid-cols-12 gap-8 items-center h-full relative">
+            
+            {/* Massive Typography - Left */}
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
-              className="col-span-5 relative"
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="col-span-12 lg:col-span-7 z-20 mix-blend-difference"
             >
-              <div className="absolute -inset-4 bg-white/10 backdrop-blur-3xl rounded-[2rem] -z-10" />
-              <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white/20">
-                <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">Begin Your Escape</p>
-                <SearchWidget variant="hero" />
-              </div>
+              <h1 className="font-heading text-[11vw] lg:text-[8vw] leading-[0.85] tracking-tighter text-[#EAE8E3]">
+                The Island
+                <br />
+                <span className="italic font-light text-primary-light">Curated.</span>
+              </h1>
+              <p className="text-[#EAE8E3]/80 text-xl lg:text-2xl mt-12 max-w-lg font-light leading-relaxed">
+                An exclusive collection of Sri Lanka's finest stays and premium vehicles, designed for the discerning traveler.
+              </p>
             </motion.div>
+
+            {/* Asymmetrical Image Gallery - Right */}
+            <div className="col-span-12 lg:col-span-5 relative h-[60vh] lg:h-[80vh] hidden md:block">
+              {/* Image 1: Main Portrait */}
+              <motion.div
+                style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '15%']) }}
+                className="absolute top-[10%] right-[10%] w-[70%] h-[80%] rounded-[2rem] overflow-hidden shadow-2xl z-10"
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1546708973-c19582772590?w=1200"
+                  alt="Sri Lanka Coast"
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-1000 ease-out"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </motion.div>
+              
+              {/* Image 2: Small Offset Square */}
+              <motion.div
+                style={{ y: useTransform(scrollYProgress, [0, 1], ['0%', '-25%']) }}
+                className="absolute bottom-[5%] left-[5%] w-[45%] aspect-square rounded-[2rem] overflow-hidden shadow-2xl z-20 border-4 border-[#F4F4F2]"
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1588464009076-6f19a3d0d17c?w=600"
+                  alt="Galle Fort"
+                  fill
+                  className="object-cover"
+                  sizes="25vw"
+                />
+              </motion.div>
+            </div>
           </div>
+
+          {/* Integrated Search Widget Pill at the Bottom */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: 'easeOut' }}
+            className="w-full mt-16 lg:mt-0 relative z-30"
+          >
+            <SearchWidget variant="hero" />
+          </motion.div>
+          
         </div>
+        
+        {/* Subtle Background Pattern/Color */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#F4F4F2] to-[#EAE8E3]" />
       </section>
 
       {/* ── Asymmetric Destinations ──────────────────────────────── */}
