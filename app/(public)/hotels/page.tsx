@@ -6,6 +6,7 @@ import { HotelFilters } from '@/components/hotels/HotelFilters'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SearchWidget } from '@/components/search/SearchWidget'
+import { HotelSortSelect } from '@/components/hotels/HotelSortSelect'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { SlidersHorizontal, List, Grid3X3 } from 'lucide-react'
@@ -94,22 +95,7 @@ async function HotelResults({
           {searchParams.city && ` in ${searchParams.city}`}
         </p>
         <div className="flex items-center gap-2">
-          {/* Sort */}
-          <select
-            className="h-9 px-3 rounded-xl border border-border text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
-            defaultValue={searchParams.sortBy ?? 'rating_desc'}
-            onChange={(e) => {
-              const url = new URL(window.location.href)
-              url.searchParams.set('sortBy', e.target.value)
-              window.location.href = url.toString()
-            }}
-            aria-label="Sort hotels"
-          >
-            <option value="rating_desc">Top Rated</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="name_asc">Name A–Z</option>
-          </select>
+          <HotelSortSelect defaultValue={searchParams.sortBy ?? 'rating_desc'} />
           {/* View toggle */}
           <div className="flex border border-border rounded-xl overflow-hidden">
             <Link
