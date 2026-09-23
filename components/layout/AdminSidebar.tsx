@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
   LayoutDashboard, Hotel, Car, BookOpen, Users, Star,
-  Tag, Settings, FileText, MapPin, ChevronLeft, ChevronRight, Menu
+  Tag, Settings, FileText, ChevronLeft, ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -59,24 +60,36 @@ export function AdminSidebar() {
         collapsed ? 'justify-center' : 'justify-between'
       )}>
         {!collapsed && (
-          <Link href="/admin" className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-              <MapPin className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+          <Link href="/admin" className="flex items-center gap-2 group">
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-border/20 bg-white">
+              <Image
+                src="/logo.jpeg"
+                alt="Mlinda Travels"
+                fill
+                className="object-cover"
+              />
             </div>
-            <span className="font-heading font-semibold text-sm text-foreground">
-              Mlinda Admin
+            <span className="font-heading font-semibold text-base tracking-tight text-foreground">
+              Mlinda<span className="text-primary">.</span>
             </span>
           </Link>
         )}
         {collapsed && (
-          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-            <MapPin className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
-          </div>
+          <Link href="/admin" aria-label="Mlinda Admin Home">
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden shadow-sm border border-border/20 bg-white">
+              <Image
+                src="/logo.jpeg"
+                alt="Mlinda Travels"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </Link>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            'w-6 h-6 rounded-md flex items-center justify-center hover:bg-sidebar-accent text-muted-foreground',
+            'w-6 h-6 rounded-md flex items-center justify-center hover:bg-sidebar-accent text-muted-foreground flex-shrink-0',
             collapsed && 'absolute left-14 top-5 bg-white border border-border shadow-sm z-10'
           )}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}

@@ -377,6 +377,108 @@ export type Database = {
         }
         Update: never
       }
+      airports: {
+        Row: {
+          id: string
+          iata_code: string
+          name: string
+          city: string
+          country: string
+        }
+        Insert: {
+          id?: string
+          iata_code: string
+          name: string
+          city: string
+          country: string
+        }
+        Update: {
+          name?: string
+          city?: string
+          country?: string
+        }
+      }
+      airlines: {
+        Row: {
+          id: string
+          name: string
+          iata_code: string | null
+          logo_url: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          iata_code?: string | null
+          logo_url?: string | null
+        }
+        Update: {
+          name?: string
+          iata_code?: string | null
+          logo_url?: string | null
+        }
+      }
+      flights: {
+        Row: {
+          id: string
+          flight_number: string
+          airline_id: string | null
+          origin_airport_id: string | null
+          destination_airport_id: string | null
+          departure_time: string
+          arrival_time: string
+          duration_minutes: number | null
+          stops: number
+          aircraft_type: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          flight_number: string
+          airline_id?: string | null
+          origin_airport_id?: string | null
+          destination_airport_id?: string | null
+          departure_time: string
+          arrival_time: string
+          duration_minutes?: number | null
+          stops?: number
+          aircraft_type?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          is_active?: boolean
+          updated_at?: string
+        }
+      }
+      flight_fares: {
+        Row: {
+          id: string
+          flight_id: string | null
+          cabin_class: 'economy' | 'premium' | 'business'
+          fare_type: string
+          price: number
+          seats_available: number
+          baggage_allowance: string | null
+          is_refundable: boolean
+        }
+        Insert: {
+          id?: string
+          flight_id?: string | null
+          cabin_class: 'economy' | 'premium' | 'business'
+          fare_type: string
+          price: number
+          seats_available: number
+          baggage_allowance?: string | null
+          is_refundable?: boolean
+        }
+        Update: {
+          seats_available?: number
+          price?: number
+        }
+      }
     }
     Views: {}
     Functions: {
@@ -405,6 +507,10 @@ export type Review = Database['public']['Tables']['reviews']['Row']
 export type Promotion = Database['public']['Tables']['promotions']['Row']
 export type AdminAuditLog = Database['public']['Tables']['admin_audit_log']['Row']
 export type Favorite = Database['public']['Tables']['favorites']['Row']
+export type Airport = Database['public']['Tables']['airports']['Row']
+export type Airline = Database['public']['Tables']['airlines']['Row']
+export type Flight = Database['public']['Tables']['flights']['Row']
+export type FlightFare = Database['public']['Tables']['flight_fares']['Row']
 
 // Extended types with joins
 export type HotelWithRooms = Hotel & {
@@ -426,3 +532,9 @@ export type ReviewWithProfile = Review & {
   profiles: { full_name: string | null; avatar_url: string | null }
 }
 
+export type FlightWithDetails = Flight & {
+  airlines: Airline | null
+  origin: Airport | null
+  destination: Airport | null
+  flight_fares: FlightFare[]
+}

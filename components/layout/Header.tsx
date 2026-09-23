@@ -145,39 +145,49 @@ export function Header() {
                   </span>
                   <ChevronDown className={cn("w-4 h-4 opacity-70 pr-1", isTransparentPage && !scrolled ? 'text-white' : 'text-foreground')} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 shadow-xl border-border/40 bg-white/95 backdrop-blur-xl">
-                <div className="flex flex-col gap-0.5 p-2 mb-1 border-b border-border/40">
-                  <p className="font-semibold text-sm text-foreground truncate">{profile.full_name || 'My Account'}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{profile.role || 'User'}</p>
+              <DropdownMenuContent align="end" className="w-60 rounded-2xl p-2 shadow-2xl border border-border/50 bg-white/98 backdrop-blur-xl">
+                {/* User info */}
+                <div className="flex items-center gap-3 p-3 mb-1 rounded-xl bg-muted/40">
+                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
+                    {initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">{profile.full_name || 'My Account'}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{profile.role || 'User'}</p>
+                  </div>
                 </div>
-                
-                <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-foreground hover:text-foreground">
-                    <User className="w-4 h-4 mr-3 text-muted-foreground group-focus:text-muted-foreground group-hover:text-muted-foreground" />
+
+                <div className="space-y-0.5">
+                  <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="rounded-xl px-3 py-2.5 text-sm font-medium text-foreground border border-transparent hover:border-border hover:bg-transparent focus:border-border focus:bg-transparent outline-none">
+                    <User className="w-4 h-4 mr-2.5 text-muted-foreground flex-shrink-0" />
                     My Account
-                </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-foreground hover:text-foreground">
-                    <Calendar className="w-4 h-4 mr-3 text-muted-foreground group-focus:text-muted-foreground group-hover:text-muted-foreground" />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="rounded-xl px-3 py-2.5 text-sm font-medium text-foreground border border-transparent hover:border-border hover:bg-transparent focus:border-border focus:bg-transparent outline-none">
+                    <Calendar className="w-4 h-4 mr-2.5 text-muted-foreground flex-shrink-0" />
                     My Bookings
-                </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-foreground hover:text-foreground">
-                    <Heart className="w-4 h-4 mr-3 text-muted-foreground group-focus:text-muted-foreground group-hover:text-muted-foreground" />
+                  </DropdownMenuItem>
+                  <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="rounded-xl px-3 py-2.5 text-sm font-medium text-foreground border border-transparent hover:border-border hover:bg-transparent focus:border-border focus:bg-transparent outline-none">
+                    <Heart className="w-4 h-4 mr-2.5 text-muted-foreground flex-shrink-0" />
                     My Favorites
-                </DropdownMenuItem>
+                  </DropdownMenuItem>
+                </div>
+
                 {profile.role === 'admin' && (
                   <>
-                    <DropdownMenuSeparator className="my-1" />
-                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-primary hover:text-primary text-primary">
-                        <Shield className="w-4 h-4 mr-3 text-primary group-focus:text-primary group-hover:text-primary" />
-                        Admin Panel
+                    <DropdownMenuSeparator className="my-2 bg-border/60" />
+                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer" />} className="rounded-xl px-3 py-2.5 text-sm font-medium text-primary border border-transparent hover:border-primary/30 hover:bg-transparent focus:border-primary/30 focus:bg-transparent outline-none">
+                      <Shield className="w-4 h-4 mr-2.5 flex-shrink-0" />
+                      Admin Panel
                     </DropdownMenuItem>
                   </>
                 )}
-                <DropdownMenuSeparator className="my-1" />
+
+                <DropdownMenuSeparator className="my-2 bg-border/60" />
                 <DropdownMenuItem
-                  className="rounded-xl p-2.5 text-sm font-medium text-destructive cursor-pointer transition-colors hover:bg-destructive/10 focus:bg-destructive/10"
+                  className="rounded-xl px-3 py-2.5 text-sm font-medium text-destructive cursor-pointer border border-transparent hover:border-destructive/30 hover:bg-transparent focus:border-destructive/30 focus:bg-transparent outline-none"
                   onClick={() => signOut()}
                 >
-                  <LogOut className="w-4 h-4 mr-3" />
+                  <LogOut className="w-4 h-4 mr-2.5 flex-shrink-0" />
                   Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
