@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { MapPin, LogIn, User, LogOut, ChevronDown } from 'lucide-react'
@@ -56,8 +57,13 @@ export function Header() {
           className="flex items-center gap-2 group"
           aria-label="Mlinda Travels Home"
         >
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-            <MapPin className="w-4 h-4 text-white" strokeWidth={2.5} />
+          <div className="relative w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center shadow-sm bg-white border border-border/20">
+            <Image
+              src="/logo.jpeg"
+              alt="Mlinda Travels Icon"
+              fill
+              className="object-cover"
+            />
           </div>
           <span
             className={cn(

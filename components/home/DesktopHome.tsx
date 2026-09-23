@@ -7,7 +7,7 @@ import { useRef } from 'react'
 import { SearchWidget } from '@/components/search/SearchWidget'
 import { HotelCard } from '@/components/hotels/HotelCard'
 import { CarCard } from '@/components/cars/CarCard'
-import { Shield, Star, Clock, Headphones, Quote, ArrowRight } from 'lucide-react'
+import { Shield, Star, Clock, Headphones, Quote, ArrowRight, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -27,6 +27,17 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
   // Parallax effects
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+  const carsScrollRef = useRef<HTMLDivElement>(null)
+  const scrollCars = (direction: 'left' | 'right') => {
+    if (carsScrollRef.current) {
+      const scrollAmount = 420
+      carsScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
 
   return (
     <div className="hidden md:block bg-background min-h-screen pb-24" ref={containerRef}>
@@ -244,7 +255,7 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
               {/* Fade out mask on the right edge to indicate scrollability */}
               <div className="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-[#F9F9F8] to-transparent z-10 pointer-events-none" />
               
-              <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-12 pt-4 no-scrollbar">
+              <div ref={carsScrollRef} className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-12 pt-4 no-scrollbar scroll-smooth">
                 {featuredCars.map((car, i) => (
                   <motion.div
                     key={car.id}
@@ -262,6 +273,24 @@ export function DesktopHome({ destinations, featuredHotels, featuredCars }: Desk
                 
                 {/* Spacer block to allow the last item to scroll past the mask */}
                 <div className="min-w-[20px] md:min-w-[100px] shrink-0" />
+              </div>
+
+              {/* Scroll Indicators */}
+              <div className="flex items-center gap-3 mt-2 pr-8 justify-end">
+                <button 
+                  onClick={() => scrollCars('left')} 
+                  className="w-12 h-12 rounded-full border border-border/50 bg-card flex items-center justify-center hover:bg-foreground hover:text-background hover:border-foreground transition-all shadow-sm group"
+                  aria-label="Scroll left"
+                >
+                  <ArrowLeft className="w-5 h-5 text-muted-foreground group-hover:text-background transition-colors" />
+                </button>
+                <button 
+                  onClick={() => scrollCars('right')} 
+                  className="w-12 h-12 rounded-full border border-border/50 bg-card flex items-center justify-center hover:bg-foreground hover:text-background hover:border-foreground transition-all shadow-sm group"
+                  aria-label="Scroll right"
+                >
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-background transition-colors" />
+                </button>
               </div>
             </div>
 
