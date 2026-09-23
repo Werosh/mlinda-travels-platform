@@ -63,7 +63,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
             onClick={() => setActiveTab('flights')}
             className={cn(
               "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2 flex items-center gap-2",
-              activeTab === 'flights' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              activeTab === 'flights' ? "border-white text-white drop-shadow-md" : "border-transparent text-white/60 hover:text-white drop-shadow-sm"
             )}
           >
             <Plane className="w-4 h-4" /> Flights
@@ -72,7 +72,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
             onClick={() => setActiveTab('hotels')}
             className={cn(
               "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2 flex items-center gap-2",
-              activeTab === 'hotels' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              activeTab === 'hotels' ? "border-white text-white drop-shadow-md" : "border-transparent text-white/60 hover:text-white drop-shadow-sm"
             )}
           >
             <Building2 className="w-4 h-4" /> Stays
@@ -81,7 +81,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
             onClick={() => setActiveTab('cars')}
             className={cn(
               "text-sm tracking-widest uppercase font-semibold transition-all duration-300 pb-1 border-b-2 flex items-center gap-2",
-              activeTab === 'cars' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              activeTab === 'cars' ? "border-white text-white drop-shadow-md" : "border-transparent text-white/60 hover:text-white drop-shadow-sm"
             )}
           >
             <Car className="w-4 h-4" /> Vehicles
