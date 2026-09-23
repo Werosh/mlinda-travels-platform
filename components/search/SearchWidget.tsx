@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
-import { Calendar, MapPin, Users, Car, Building2, Search, Plane } from 'lucide-react'
+import { Calendar, MapPin, Users, Car, Building2, Search, Plane, Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -13,6 +13,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import type { DateRange } from 'react-day-picker'
 
@@ -135,18 +142,43 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
 
           {(activeTab === 'hotels' || activeTab === 'flights') && (
             <div className="flex-1 flex items-center px-6">
-              <Users className="w-4 h-4 text-primary mr-3" />
-              <select
-                value={guests}
-                onChange={(e) => setGuests(Number(e.target.value))}
-                className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-foreground text-sm font-medium appearance-none cursor-pointer"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                  <option key={n} value={n}>
-                    {n} {n === 1 ? 'Guest' : 'Guests'}
-                  </option>
-                ))}
-              </select>
+              <Popover>
+                <PopoverTrigger className="w-full flex items-center text-left focus:outline-none group">
+                  <Users className="w-4 h-4 text-primary mr-3 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm font-medium">
+                    {guests} {guests === 1 ? 'Guest' : 'Guests'}
+                  </span>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-4 rounded-3xl shadow-2xl border-none bg-white/95 backdrop-blur-xl" align="center">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-foreground">Guests</div>
+                      <div className="text-xs text-muted-foreground">Ages 2 or above</div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full border-border/60"
+                        onClick={() => setGuests(Math.max(1, guests - 1))}
+                        disabled={guests <= 1}
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="w-4 text-center font-medium">{guests}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full border-border/60"
+                        onClick={() => setGuests(Math.min(8, guests + 1))}
+                        disabled={guests >= 8}
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           )}
 
@@ -218,16 +250,46 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
         </Popover>
 
         {(activeTab === 'hotels' || activeTab === 'flights') && (
-          <div className="relative md:w-40">
-            <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            <select
-              value={guests}
-              onChange={(e) => setGuests(Number(e.target.value))}
-              className="w-full h-11 pl-9 pr-4 rounded-xl border border-border bg-background/80 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary appearance-none cursor-pointer"
-            >
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => <option key={n} value={n}>{n} {n === 1 ? 'Guest' : 'Guests'}</option>)}
-            </select>
-          </div>
+          <Popover>
+            <PopoverTrigger render={<Button
+                variant="outline"
+                className="md:w-40 h-11 rounded-xl border-border justify-start font-normal bg-background/80 hover:bg-background"
+              />}>
+                <Users className="mr-2 w-4 h-4 flex-shrink-0 text-muted-foreground" />
+                <span className="text-sm">
+                  {guests} {guests === 1 ? 'Guest' : 'Guests'}
+                </span>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-4 rounded-2xl shadow-xl" align="end">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-foreground">Guests</div>
+                  <div className="text-xs text-muted-foreground">Ages 2 or above</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full"
+                    onClick={() => setGuests(Math.max(1, guests - 1))}
+                    disabled={guests <= 1}
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <span className="w-4 text-center font-medium">{guests}</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full"
+                    onClick={() => setGuests(Math.min(8, guests + 1))}
+                    disabled={guests >= 8}
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         )}
 
         <Button onClick={handleSearch} size="lg" className="h-11 px-6 rounded-xl bg-primary hover:bg-[#164d37] font-semibold shadow-lg shadow-primary/25 transition-all">
