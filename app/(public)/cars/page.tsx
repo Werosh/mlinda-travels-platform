@@ -9,7 +9,7 @@ import { SearchWidget } from '@/components/search/SearchWidget'
 
 export const metadata: Metadata = {
   title: 'Car Rentals in Sri Lanka',
-  description: 'Find and book the perfect rental car across Sri Lanka — economy, hybrid, SUV, and luxury options with real-time availability.',
+  description: 'Find and book the perfect rental car across Sri Lanka - economy, hybrid, SUV, and luxury options with real-time availability.',
 }
 
 interface CarsPageProps {

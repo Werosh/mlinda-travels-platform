@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-export const metadata: Metadata = { title: 'Users — Admin' }
+export const metadata: Metadata = { title: 'Users - Admin' }
 
 export default async function AdminUsersPage() {
   const supabase = await createClient()
@@ -41,7 +41,7 @@ export default async function AdminUsersPage() {
                     <p className="font-medium">{user.full_name ?? 'No name'}</p>
                     <p className="text-xs text-muted-foreground font-mono">{user.id.slice(0, 12)}…</p>
                   </td>
-                  <td className="px-5 py-4 text-muted-foreground">{user.phone ?? '—'}</td>
+                  <td className="px-5 py-4 text-muted-foreground">{user.phone ?? '-'}</td>
                   <td className="px-5 py-4">
                     <Badge className={`border-0 text-xs capitalize ${user.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
                       {user.role}

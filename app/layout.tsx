@@ -18,7 +18,7 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Mlinda Travels — Hotels & Car Rentals in Sri Lanka',
+    default: 'Mlinda Travels - Hotels & Car Rentals in Sri Lanka',
     template: '%s | Mlinda Travels',
   },
   description:

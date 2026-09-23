@@ -10,7 +10,7 @@ import { getFeaturedHotels } from '@/lib/services/hotels.service'
 import { getFeaturedCars } from '@/lib/services/cars.service'
 
 export const metadata: Metadata = {
-  title: 'Mlinda Travels — Premium Hotels & Car Rentals in Sri Lanka',
+  title: 'Mlinda Travels - Premium Hotels & Car Rentals in Sri Lanka',
   description:
     'Book world-class hotels and car rentals across Sri Lanka. Real-time availability, seamless checkout, and exceptional service. Your journey begins here.',
 }
@@ -82,13 +82,13 @@ const testimonials = [
     name: 'James K.',
     location: 'Sydney, Australia',
     rating: 5,
-    text: 'From Colombo to Galle in a stunning BMW — the booking took 5 minutes and the car was exactly as described. Will use Mlinda for every future trip.',
+    text: 'From Colombo to Galle in a stunning BMW - the booking took 5 minutes and the car was exactly as described. Will use Mlinda for every future trip.',
   },
   {
     name: 'Priya R.',
     location: 'Toronto, Canada',
     rating: 5,
-    text: 'As a solo traveller, I needed to trust the service completely. Mlinda delivered on every promise — wonderful hotel recommendations and reliable vehicles.',
+    text: 'As a solo traveller, I needed to trust the service completely. Mlinda delivered on every promise - wonderful hotel recommendations and reliable vehicles.',
   },
 ]
 
@@ -203,7 +203,7 @@ export default async function HomePage() {
                 Exceptional Hotels
               </h2>
               <p className="text-muted-foreground mt-2 max-w-lg">
-                From colonial heritage properties to eco-luxury lodges — every stay is a story.
+                From colonial heritage properties to eco-luxury lodges - every stay is a story.
               </p>
             </div>
             <Button asChild variant="outline" className="hidden sm:flex rounded-xl border-primary text-primary hover:bg-primary hover:text-white">
@@ -237,7 +237,7 @@ export default async function HomePage() {
                 Explore by Road
               </h2>
               <p className="text-muted-foreground mt-2 max-w-lg">
-                From nimble city cars to rugged 4WDs — the perfect vehicle for every journey.
+                From nimble city cars to rugged 4WDs - the perfect vehicle for every journey.
               </p>
             </div>
             <Button asChild variant="outline" className="hidden sm:flex rounded-xl border-primary text-primary hover:bg-primary hover:text-white">
@@ -335,10 +335,9 @@ export default async function HomePage() {
             <p className="text-white/80 text-sm mb-6">
               Subscribe to our newsletter and be the first to receive special offers, curated itineraries, and travel inspiration.
             </p>
-            <form
+            <div
               className="flex gap-3"
               aria-label="Newsletter subscription"
-              onSubmit={(e) => e.preventDefault()}
             >
               <input
                 type="email"
@@ -347,12 +346,12 @@ export default async function HomePage() {
                 aria-label="Email for newsletter"
               />
               <Button
-                type="submit"
+                type="button"
                 className="bg-white text-primary hover:bg-white/90 rounded-xl h-11 px-5 font-semibold shrink-0"
               >
                 Subscribe
               </Button>
-            </form>
+            </div>
             <p className="text-white/50 text-xs mt-3">
               No spam. Unsubscribe any time.
             </p>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Left — Decorative Panel (hidden on mobile) */}
+      {/* Left - Decorative Panel (hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden flex-col justify-between p-12">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -34,7 +34,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <blockquote className="font-heading text-3xl text-white font-medium leading-snug mb-4">
             &ldquo;Sri Lanka is not just a destination. It&apos;s a feeling.&rdquo;
           </blockquote>
-          <p className="text-white/70 text-sm">— Mlinda Travels, est. 2024</p>
+          <p className="text-white/70 text-sm">- Mlinda Travels, est. 2024</p>
           <div className="mt-8 flex items-center gap-4">
             {['50+', '30+', '10K+'].map((stat, i) => (
               <div key={i} className="text-white">
@@ -48,7 +48,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
       </div>
 
-      {/* Right — Form Panel */}
+      {/* Right - Form Panel */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-md">
           {/* Mobile logo */}

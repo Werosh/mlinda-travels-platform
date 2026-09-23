@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { format } from 'date-fns'
 import { Shield } from 'lucide-react'
 
-export const metadata: Metadata = { title: 'Audit Log — Admin' }
+export const metadata: Metadata = { title: 'Audit Log - Admin' }
 
 export default async function AdminAuditLogPage() {
   const supabase = await createClient()

@@ -46,8 +46,8 @@ function StepIndicator({ current }: { current: number }) {
               ${i < current
                 ? 'border-primary bg-primary text-white'
                 : i === current
-                ? 'border-primary text-primary'
-                : 'border-muted-foreground/30 text-muted-foreground/50'}
+                  ? 'border-primary text-primary'
+                  : 'border-muted-foreground/30 text-muted-foreground/50'}
             `}>
               {i < current ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
             </div>
@@ -373,14 +373,14 @@ export default function CheckoutPage() {
       <div className="container-base py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="font-heading text-3xl font-bold mb-2">Complete Your Booking</h1>
-          <p className="text-muted-foreground mb-8">You&apos;re almost there — review your selection and complete payment.</p>
+          <p className="text-muted-foreground mb-8">You&apos;re almost there - review your selection and complete payment.</p>
 
           <StepIndicator current={step} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Form steps */}
             <div className="lg:col-span-2">
-              {/* Step 0 — Review */}
+              {/* Step 0 - Review */}
               {step === 0 && (
                 <div className="bg-white rounded-2xl border border-border p-6 space-y-4">
                   <h2 className="font-heading text-xl font-semibold flex items-center gap-2">
@@ -431,7 +431,7 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Step 1 — Guest Details */}
+              {/* Step 1 - Guest Details */}
               {step === 1 && (
                 <div className="bg-white rounded-2xl border border-border p-6">
                   <h2 className="font-heading text-xl font-semibold flex items-center gap-2 mb-5">
@@ -483,7 +483,7 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Step 2 — Payment */}
+              {/* Step 2 - Payment */}
               {step === 2 && guestDetails && (
                 <div className="bg-white rounded-2xl border border-border p-6">
                   <h2 className="font-heading text-xl font-semibold flex items-center gap-2 mb-5">

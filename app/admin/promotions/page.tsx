@@ -5,7 +5,7 @@ import { Plus, Tag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-export const metadata: Metadata = { title: 'Promotions — Admin' }
+export const metadata: Metadata = { title: 'Promotions - Admin' }
 
 export default async function AdminPromotionsPage() {
   const supabase = await createClient()
@@ -13,7 +13,7 @@ export default async function AdminPromotionsPage() {
     .from('promotions')
     .select('*')
     .order('created_at', { ascending: false })
-  
+
   const promos = promosRaw as any[] | null
 
   return (

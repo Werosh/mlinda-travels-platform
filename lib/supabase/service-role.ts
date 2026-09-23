@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/types'
 
 /**
- * Service role client — bypasses RLS.
+ * Service role client - bypasses RLS.
  * ONLY use in server-side code (API routes, Server Actions).
  * NEVER import in client components.
  */

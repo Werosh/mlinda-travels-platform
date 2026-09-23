@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session — IMPORTANT: do not add logic between this and the return
+  // Refresh session - IMPORTANT: do not add logic between this and the return
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Server-side role check — never trust client
+    // Server-side role check - never trust client
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
       .single()
 
     if (!profile || profile.role !== 'admin') {
-      // Authenticated but not admin — redirect to home with error
+      // Authenticated but not admin - redirect to home with error
       const homeUrl = new URL('/', request.url)
       homeUrl.searchParams.set('error', 'unauthorized')
       return NextResponse.redirect(homeUrl)
@@ -74,7 +74,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // ── Auth pages — redirect logged-in users ─────────────────
+  // ── Auth pages - redirect logged-in users ─────────────────
   if (pathname.startsWith('/auth/') && user) {
     // Don't redirect from forgot-password even if logged in
     if (!pathname.includes('forgot-password')) {

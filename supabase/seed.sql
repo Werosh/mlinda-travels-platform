@@ -1,5 +1,5 @@
 -- ============================================================
--- Mlinda Travels — Seed Data
+-- Mlinda Travels - Seed Data
 -- Run AFTER schema.sql and rls.sql
 -- NOTE: The demo admin user must be created manually in Supabase
 -- Auth dashboard first, then update their profile role below.
@@ -73,7 +73,7 @@ INSERT INTO public.hotels (id, name, description, address, city, country, lat, l
 
 ('h1000000-0000-0000-0000-000000000006',
  'Cinnamon Grand Colombo',
- 'The heartbeat of Colombo city — a contemporary luxury hotel combining business efficiency with leisure elegance. Walking distance from Colombo''s top attractions and shopping.',
+ 'The heartbeat of Colombo city - a contemporary luxury hotel combining business efficiency with leisure elegance. Walking distance from Colombo''s top attractions and shopping.',
  '77 Galle Road, Colombo 3',
  'Colombo', 'Sri Lanka',
  6.8914, 79.8551,
@@ -160,7 +160,7 @@ INSERT INTO public.room_types (id, hotel_id, name, description, max_guests, base
  ARRAY['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800']),
 
 ('rt000006-0000-0000-0000-000000000003', 'h1000000-0000-0000-0000-000000000006',
- 'Grand Suite', 'The pinnacle of city luxury — a massive suite with separate dining, home theater, and Colombo skyline terrace.',
+ 'Grand Suite', 'The pinnacle of city luxury - a massive suite with separate dining, home theater, and Colombo skyline terrace.',
  4, 580.00, 5,
  ARRAY['https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800']);
 
@@ -248,10 +248,10 @@ ON CONFLICT (car_id, date) DO NOTHING;
 -- ============================================================
 INSERT INTO public.promotions (code, description, discount_percent, valid_from, valid_to, max_uses, min_booking_amount, applies_to, is_active) VALUES
 ('WELCOME10', 'Welcome discount for new customers', 10.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '90 days', 100, 50.00, 'all', TRUE),
-('HOTEL20', 'Exclusive hotel deal — 20% off hotel bookings', 20.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '30 days', 50, 100.00, 'hotel', TRUE),
-('CAR15', 'Road trip special — 15% off car rentals', 15.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '60 days', 75, 80.00, 'car', TRUE),
-('SUMMER25', 'Summer travel bonanza — 25% off everything', 25.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '45 days', 30, 200.00, 'all', TRUE),
-('EARLYBIRD', 'Early bird special — 12% off when booking 2 weeks ahead', 12.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '120 days', NULL, 75.00, 'all', TRUE);
+('HOTEL20', 'Exclusive hotel deal - 20% off hotel bookings', 20.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '30 days', 50, 100.00, 'hotel', TRUE),
+('CAR15', 'Road trip special - 15% off car rentals', 15.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '60 days', 75, 80.00, 'car', TRUE),
+('SUMMER25', 'Summer travel bonanza - 25% off everything', 25.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '45 days', 30, 200.00, 'all', TRUE),
+('EARLYBIRD', 'Early bird special - 12% off when booking 2 weeks ahead', 12.00, CURRENT_DATE, CURRENT_DATE + INTERVAL '120 days', NULL, 75.00, 'all', TRUE);
 
 -- ============================================================
 -- SAMPLE APPROVED REVIEWS

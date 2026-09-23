@@ -1,5 +1,5 @@
 -- ============================================================
--- Mlinda Travels — Row Level Security Policies
+-- Mlinda Travels - Row Level Security Policies
 -- Run AFTER schema.sql
 -- ============================================================
 

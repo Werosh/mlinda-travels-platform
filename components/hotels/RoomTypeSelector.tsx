@@ -33,16 +33,16 @@ export function RoomTypeSelector({
   const nights =
     checkIn && checkOut
       ? Math.max(
-          1,
-          Math.ceil(
-            (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)
-          )
+        1,
+        Math.ceil(
+          (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)
         )
+      )
       : 1
 
   const handleSelect = (room: RoomType) => {
     if (!checkIn || !checkOut) {
-      // No dates — prompt user
+      // No dates - prompt user
       router.push(`/hotels?city=&checkIn=&checkOut=&scroll=dates`)
       return
     }
@@ -150,11 +150,10 @@ export function RoomTypeSelector({
                       handleSelect(room)
                     }}
                     size="sm"
-                    className={`rounded-xl ${
-                      isSelected
+                    className={`rounded-xl ${isSelected
                         ? 'bg-primary hover:bg-[#164d37]'
                         : 'bg-primary hover:bg-[#164d37]'
-                    }`}
+                      }`}
                   >
                     {checkIn && checkOut ? 'Book Now' : 'Select Dates First'}
                   </Button>

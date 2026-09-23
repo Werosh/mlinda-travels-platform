@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 
-export const metadata: Metadata = { title: 'Hotels — Admin' }
+export const metadata: Metadata = { title: 'Hotels - Admin' }
 
 export default async function AdminHotelsPage() {
   const supabase = await createClient()
@@ -14,7 +14,7 @@ export default async function AdminHotelsPage() {
     .from('hotels')
     .select('*, room_types(count)')
     .order('created_at', { ascending: false })
-  
+
   const hotels = hotelsRaw as any[] | null
 
   return (

@@ -49,7 +49,7 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
     booking = byId
   }
 
-  // For demo/dev — show a success page even if webhook hasn't fired yet
+  // For demo/dev - show a success page even if webhook hasn't fired yet
   // In production the webhook creates the booking record
   const isProcessing = !booking
 
@@ -129,7 +129,7 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
                   <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">Location</p>
-                    <p className="font-semibold text-sm">{locationName ?? '—'}</p>
+                    <p className="font-semibold text-sm">{locationName ?? '-'}</p>
                   </div>
                 </div>
 

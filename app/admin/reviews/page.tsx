@@ -5,7 +5,7 @@ import { Star, CheckCircle, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
-export const metadata: Metadata = { title: 'Reviews — Admin' }
+export const metadata: Metadata = { title: 'Reviews - Admin' }
 
 async function approveReview(id: string) {
   'use server'
@@ -112,7 +112,7 @@ export default async function AdminReviewsPage() {
                     : `${(review as any).cars?.make} ${(review as any).cars?.model}`
                   return (
                     <tr key={review.id} className="hover:bg-muted/20">
-                      <td className="px-5 py-3 font-medium">{(review as any).profiles?.full_name ?? '—'}</td>
+                      <td className="px-5 py-3 font-medium">{(review as any).profiles?.full_name ?? '-'}</td>
                       <td className="px-5 py-3 text-muted-foreground text-xs">{itemName}</td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-0.5">

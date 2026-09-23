@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { createClient } from '@/lib/supabase/server'
 
-export const metadata: Metadata = { title: 'Bookings — Admin' }
+export const metadata: Metadata = { title: 'Bookings - Admin' }
 
 const statusColors: Record<string, string> = {
   confirmed: 'bg-green-100 text-green-700',
@@ -62,11 +62,10 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
             <Link
               key={s}
               href={`/admin/bookings${s !== 'all' ? `?status=${s}` : ''}`}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors ${
-                (params.status ?? 'all') === s
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors ${(params.status ?? 'all') === s
                   ? 'bg-primary text-white'
                   : 'bg-white border border-border text-muted-foreground hover:border-primary hover:text-primary'
-              }`}
+                }`}
             >
               {s}
             </Link>
@@ -115,7 +114,7 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
                       <p className="font-medium text-sm">{guestName ?? 'Guest'}</p>
                     </td>
                     <td className="px-5 py-4">
-                      <p className="text-sm">{itemName ?? '—'}</p>
+                      <p className="text-sm">{itemName ?? '-'}</p>
                       <p className="text-xs text-muted-foreground capitalize">{booking.type}</p>
                     </td>
                     <td className="px-5 py-4 text-muted-foreground text-xs">
