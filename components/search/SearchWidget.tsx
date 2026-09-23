@@ -97,8 +97,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
 
         {/* Date Range */}
         <Popover open={dateOpen} onOpenChange={setDateOpen}>
-          <PopoverTrigger asChild>
-            <Button
+          <PopoverTrigger render={<Button
               variant="outline"
               id="search-dates"
               className={cn(
@@ -106,7 +105,7 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
                 !dateRange?.from && 'text-muted-foreground'
               )}
               aria-label="Select dates"
-            >
+            />}>
               <Calendar className="mr-2 w-4 h-4 flex-shrink-0 text-muted-foreground" />
               {dateRange?.from ? (
                 dateRange.to ? (
@@ -119,7 +118,6 @@ export function SearchWidget({ className, variant = 'hero' }: SearchWidgetProps)
               ) : (
                 <span className="text-sm">{activeTab === 'hotels' ? 'Check-in → Check-out' : 'Pickup → Return'}</span>
               )}
-            </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="start">
             <CalendarComponent

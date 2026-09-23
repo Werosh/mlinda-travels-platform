@@ -66,7 +66,7 @@ export async function searchHotels(params: HotelSearchParams): Promise<HotelSear
 
   // Fetch min prices for each hotel
   const hotelsWithPrice = await Promise.all(
-    (data ?? []).map(async (hotel) => {
+    (data ?? []).map(async (hotel: Hotel) => {
       const { data: rooms } = await (supabase as any)
       .from('room_types')
         .select('base_price')
@@ -149,7 +149,7 @@ export async function checkRoomAvailability(
 
   if (!data || data.length === 0) return { available: false, availableRooms: 0, pricePerNight: null }
 
-  const minAvailable = Math.min(...data.map((d) => d.rooms_available))
+  const minAvailable = Math.min(...data.map((d: { rooms_available: number }) => d.rooms_available))
   const priceOverride = data[0]?.price_override ?? null
 
   return {
@@ -193,7 +193,7 @@ export async function getHotelAverageRating(hotelId: string): Promise<number | n
     .eq('is_approved', true)
 
   if (!data || data.length === 0) return null
-  const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length
+  const avg = data.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / data.length
   return Math.round(avg * 10) / 10
 }
 
@@ -225,6 +225,6 @@ export async function getHotelCities(): Promise<string[]> {
     .eq('is_active', true)
     .order('city')
 
-  const cities = [...new Set(data?.map((h) => h.city) ?? [])]
+  const cities = Array.from(new Set<string>(data?.map((h: any) => h.city as string) ?? []))
   return cities
 }

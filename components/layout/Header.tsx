@@ -97,12 +97,11 @@ export function Header() {
             <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
           ) : profile ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
+              <DropdownMenuTrigger render={<Button
                   variant="ghost"
                   className="flex items-center gap-2 px-3 rounded-xl"
                   aria-label="User menu"
-                >
+                />}>
                   <Avatar className="w-8 h-8 border-2 border-primary/20">
                     <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? 'User'} />
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
@@ -118,27 +117,20 @@ export function Header() {
                     {profile.full_name?.split(' ')[0] ?? 'Account'}
                   </span>
                   <ChevronDown className="w-4 h-4 opacity-60" />
-                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52 rounded-xl p-1">
-                <DropdownMenuItem asChild className="rounded-lg">
-                  <Link href="/account" className="cursor-pointer">
+                <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="rounded-lg">
                     <User className="w-4 h-4 mr-2" />
                     My Account
-                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="rounded-lg">
-                  <Link href="/account/bookings" className="cursor-pointer">
+                <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="rounded-lg">
                     My Bookings
-                  </Link>
                 </DropdownMenuItem>
                 {profile.role === 'admin' && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild className="rounded-lg">
-                      <Link href="/admin" className="cursor-pointer text-primary">
+                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer text-primary" />} className="rounded-lg">
                         Admin Panel
-                      </Link>
                     </DropdownMenuItem>
                   </>
                 )}
@@ -179,8 +171,7 @@ export function Header() {
 
         {/* Mobile Menu */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild>
-            <Button
+          <SheetTrigger render={<Button
               variant="ghost"
               size="icon"
               className={cn(
@@ -190,9 +181,8 @@ export function Header() {
                   : ''
               )}
               aria-label="Open mobile menu"
-            >
+            />}>
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-72 pt-16">
             <nav className="flex flex-col gap-1">

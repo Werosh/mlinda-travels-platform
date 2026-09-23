@@ -78,15 +78,14 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
 
       {/* Date Selection */}
       <Popover open={dateOpen} onOpenChange={setDateOpen}>
-        <PopoverTrigger asChild>
-          <Button
+        <PopoverTrigger render={<Button
             variant="outline"
             className={cn(
               'w-full h-auto py-3 px-4 rounded-xl border-border justify-start font-normal mb-3',
               !dateRange?.from && 'text-muted-foreground'
             )}
             aria-label="Select rental dates"
-          >
+          />}>
             <Calendar className="mr-2 w-4 h-4 text-muted-foreground flex-shrink-0" />
             {dateRange?.from ? (
               <div className="text-left">
@@ -99,7 +98,6 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
             ) : (
               <span className="text-sm">Select pickup → return date</span>
             )}
-          </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="start">
           <CalendarComponent

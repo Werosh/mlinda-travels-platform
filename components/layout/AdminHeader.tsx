@@ -63,8 +63,7 @@ export function AdminHeader({ profile }: AdminHeaderProps) {
         </Button>
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 px-2 rounded-xl" aria-label="Admin user menu">
+          <DropdownMenuTrigger render={<Button variant="ghost" className="flex items-center gap-2 px-2 rounded-xl" aria-label="Admin user menu" />}>
               <Avatar className="w-8 h-8 border-2 border-primary/20">
                 <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? 'Admin'} />
                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
@@ -74,15 +73,14 @@ export function AdminHeader({ profile }: AdminHeaderProps) {
               <span className="text-sm font-medium max-w-[120px] truncate hidden sm:block">
                 {profile.full_name ?? 'Admin'}
               </span>
-            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 rounded-xl">
             <DropdownMenuItem className="rounded-lg text-xs text-muted-foreground" disabled>
               {profile.role.toUpperCase()}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="rounded-lg">
-              <Link href="/">View Public Site</Link>
+            <DropdownMenuItem render={<Link href="/" />} className="rounded-lg">
+              View Public Site
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

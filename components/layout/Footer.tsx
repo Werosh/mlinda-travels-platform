@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { MapPin, Mail, Phone, Globe, MessageCircle } from 'lucide-react'
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
 
 const footerLinks = {
   Explore: [
@@ -60,10 +61,10 @@ export function Footer() {
             {/* Social Links */}
             <div className="flex items-center gap-3">
               {[
-                { icon: Facebook, href: '#', label: 'Facebook' },
-                { icon: Instagram, href: '#', label: 'Instagram' },
-                { icon: Twitter, href: '#', label: 'Twitter/X' },
-                { icon: Youtube, href: '#', label: 'YouTube' },
+                { icon: FaFacebook, href: '#', label: 'Facebook' },
+                { icon: FaInstagram, href: '#', label: 'Instagram' },
+                { icon: FaTwitter, href: '#', label: 'Twitter/X' },
+                { icon: FaYoutube, href: '#', label: 'YouTube' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
