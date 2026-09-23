@@ -151,23 +151,23 @@ export function Header() {
                   <p className="text-xs text-muted-foreground capitalize">{profile.role || 'User'}</p>
                 </div>
                 
-                <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-muted focus:bg-muted hover:!text-foreground focus:!text-foreground">
-                    <User className="w-4 h-4 mr-3 text-muted-foreground group-hover:!text-foreground group-focus:!text-foreground transition-colors" />
+                <DropdownMenuItem render={<Link href="/account" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-foreground hover:text-foreground">
+                    <User className="w-4 h-4 mr-3 text-muted-foreground group-focus:text-muted-foreground group-hover:text-muted-foreground" />
                     My Account
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-muted focus:bg-muted hover:!text-foreground focus:!text-foreground">
-                    <Calendar className="w-4 h-4 mr-3 text-muted-foreground group-hover:!text-foreground group-focus:!text-foreground transition-colors" />
+                <DropdownMenuItem render={<Link href="/account/bookings" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-foreground hover:text-foreground">
+                    <Calendar className="w-4 h-4 mr-3 text-muted-foreground group-focus:text-muted-foreground group-hover:text-muted-foreground" />
                     My Bookings
                 </DropdownMenuItem>
-                <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-muted focus:bg-muted hover:!text-foreground focus:!text-foreground">
-                    <Heart className="w-4 h-4 mr-3 text-muted-foreground group-hover:!text-foreground group-focus:!text-foreground transition-colors" />
+                <DropdownMenuItem render={<Link href="/favorites" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-foreground hover:text-foreground">
+                    <Heart className="w-4 h-4 mr-3 text-muted-foreground group-focus:text-muted-foreground group-hover:text-muted-foreground" />
                     My Favorites
                 </DropdownMenuItem>
                 {profile.role === 'admin' && (
                   <>
                     <DropdownMenuSeparator className="my-1" />
-                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer text-primary" />} className="group rounded-xl p-2.5 text-sm font-medium transition-colors hover:bg-primary/10 focus:bg-primary/10 hover:!text-primary focus:!text-primary">
-                        <Shield className="w-4 h-4 mr-3 group-hover:!text-primary group-focus:!text-primary" />
+                    <DropdownMenuItem render={<Link href="/admin" className="cursor-pointer" />} className="group rounded-xl p-2.5 text-sm font-medium transition-all border border-transparent hover:bg-transparent focus:bg-transparent hover:border-primary/40 focus:border-primary/40 focus:text-primary hover:text-primary text-primary">
+                        <Shield className="w-4 h-4 mr-3 text-primary group-focus:text-primary group-hover:text-primary" />
                         Admin Panel
                     </DropdownMenuItem>
                   </>
