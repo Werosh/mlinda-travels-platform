@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { createServiceRoleClient } from "@/lib/supabase/service-role";
 import { createBooking } from "@/lib/services/bookings.service";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
   apiVersion: "2026-08-26.dahlia",
 });
 

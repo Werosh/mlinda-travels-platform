@@ -56,31 +56,32 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex gap-1">
-          {statuses.map((s) => (
-            <Link
-              key={s}
-              href={`/admin/bookings${s !== 'all' ? `?status=${s}` : ''}`}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors ${(params.status ?? 'all') === s
-                  ? 'bg-primary text-white'
-                  : 'bg-white border border-border text-muted-foreground hover:border-primary hover:text-primary'
-                }`}
-            >
-              {s}
-            </Link>
-          ))}
-        </div>
-        <div className="flex gap-1 ml-auto">
+      <div className="flex flex-wrap items-center gap-2">
+        {statuses.map((s) => (
           <Link
-            href="/admin/bookings?type=hotel"
-            className={`px-3 py-1.5 rounded-xl text-xs border ${params.type === 'hotel' ? 'bg-primary text-white border-primary' : 'bg-white border-border text-muted-foreground'}`}
-          >Hotel</Link>
-          <Link
-            href="/admin/bookings?type=car"
-            className={`px-3 py-1.5 rounded-xl text-xs border ${params.type === 'car' ? 'bg-primary text-white border-primary' : 'bg-white border-border text-muted-foreground'}`}
-          >Car</Link>
-        </div>
+            key={s}
+            href={`/admin/bookings${s !== 'all' ? `?status=${s}` : ''}`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors ${(params.status ?? 'all') === s
+                ? 'bg-primary text-white'
+                : 'bg-white border border-border text-muted-foreground hover:border-primary hover:text-primary'
+              }`}
+          >
+            {s}
+          </Link>
+        ))}
+        <div className="w-full sm:w-px h-px sm:h-6 bg-border my-1 sm:my-0 sm:mx-1 hidden sm:block" />
+        <Link
+          href="/admin/bookings?type=hotel"
+          className={`px-3 py-1.5 rounded-xl text-xs border ${params.type === 'hotel' ? 'bg-primary text-white border-primary' : 'bg-white border-border text-muted-foreground'}`}
+        >Hotel</Link>
+        <Link
+          href="/admin/bookings?type=car"
+          className={`px-3 py-1.5 rounded-xl text-xs border ${params.type === 'car' ? 'bg-primary text-white border-primary' : 'bg-white border-border text-muted-foreground'}`}
+        >Car</Link>
+        <Link
+          href="/admin/bookings?type=flight"
+          className={`px-3 py-1.5 rounded-xl text-xs border ${params.type === 'flight' ? 'bg-primary text-white border-primary' : 'bg-white border-border text-muted-foreground'}`}
+        >Flight</Link>
       </div>
 
       {/* Table */}

@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { createClient } from '@/lib/supabase/server'
 import { getBookingById } from '@/lib/services/bookings.service'
+import { LeaveReviewDialog } from '@/components/reviews/LeaveReviewDialog'
 
 export const metadata: Metadata = {
   title: 'Booking Details | Mlinda Travels',
@@ -74,6 +75,17 @@ export default async function BookingDetailsPage({
     : isCar
     ? { start: 'Pickup', end: 'Drop-off' }
     : { start: 'Departure', end: 'Return' }
+
+  // Check if reviewed
+  const { data: existingReview } = await supabase
+    .from('reviews')
+    .select('id')
+    .eq('booking_id', id)
+    .maybeSingle()
+
+  const hasReviewed = !!existingReview
+  const isPast = new Date(booking.end_date) < new Date()
+  const canReview = (booking.status === 'completed' || (booking.status === 'confirmed' && isPast)) && (isHotel || isCar)
 
   return (
     <div className="bg-background min-h-screen">
@@ -300,6 +312,22 @@ export default async function BookingDetailsPage({
                 </div>
               </div>
             </div>
+
+            {/* Review */}
+            {canReview && (
+              <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
+                <h3 className="font-semibold text-lg mb-2">Rate Your Experience</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Share your thoughts about this {isHotel ? 'hotel' : 'car'} to help other travelers.
+                </p>
+                <LeaveReviewDialog 
+                  bookingId={booking.id}
+                  type={booking.type}
+                  itemId={isHotel ? (booking.hotel_id as string) : (booking.car_id as string)}
+                  hasReviewed={hasReviewed}
+                />
+              </div>
+            )}
 
             {/* Help */}
             {booking.status !== 'cancelled' && booking.status !== 'completed' && (
