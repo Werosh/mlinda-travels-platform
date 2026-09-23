@@ -3,7 +3,6 @@ import { getFeaturedHotels } from '@/lib/services/hotels.service'
 import { getFeaturedCars } from '@/lib/services/cars.service'
 import { DesktopHome } from '@/components/home/DesktopHome'
 import { MobileHome } from '@/components/home/MobileHome'
-import { Shield, Star, Clock, Headphones } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Mlinda Travels - Premium Hotels & Car Rentals in Sri Lanka',
@@ -44,50 +43,6 @@ const destinations = [
   },
 ]
 
-const trustPoints = [
-  {
-    icon: Shield,
-    title: 'Secure Booking',
-    desc: 'Bank-level SSL encryption and Stripe-powered payments. Your data is always protected.',
-  },
-  {
-    icon: Star,
-    title: 'Curated Quality',
-    desc: 'Every hotel and vehicle is personally vetted for quality, cleanliness, and service.',
-  },
-  {
-    icon: Clock,
-    title: 'Instant Confirmation',
-    desc: 'Real-time availability means your booking is confirmed the moment you pay.',
-  },
-  {
-    icon: Headphones,
-    title: '24/7 Support',
-    desc: 'Our local team is always available to ensure your journey goes perfectly.',
-  },
-]
-
-const testimonials = [
-  {
-    name: 'Sarah M.',
-    location: 'London, UK',
-    rating: 5,
-    text: 'Mlinda Travels made our Sri Lanka trip absolutely seamless. The hotel selection was exquisite and the car rental process was the smoothest I have ever experienced.',
-  },
-  {
-    name: 'James K.',
-    location: 'Sydney, Australia',
-    rating: 5,
-    text: 'From Colombo to Galle in a stunning BMW - the booking took 5 minutes and the car was exactly as described. Will use Mlinda for every future trip.',
-  },
-  {
-    name: 'Priya R.',
-    location: 'Toronto, Canada',
-    rating: 5,
-    text: 'As a solo traveller, I needed to trust the service completely. Mlinda delivered on every promise - wonderful hotel recommendations and reliable vehicles.',
-  },
-]
-
 export default async function HomePage() {
   const [featuredHotels, featuredCars] = await Promise.all([
     getFeaturedHotels(6),
@@ -100,8 +55,6 @@ export default async function HomePage() {
         destinations={destinations}
         featuredHotels={featuredHotels}
         featuredCars={featuredCars}
-        trustPoints={trustPoints}
-        testimonials={testimonials}
       />
       <MobileHome
         destinations={destinations}

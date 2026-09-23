@@ -15,11 +15,9 @@ interface DesktopHomeProps {
   destinations: any[]
   featuredHotels: any[]
   featuredCars: any[]
-  trustPoints: any[]
-  testimonials: any[]
 }
 
-export function DesktopHome({ destinations, featuredHotels, featuredCars, trustPoints, testimonials }: DesktopHomeProps) {
+export function DesktopHome({ destinations, featuredHotels, featuredCars }: DesktopHomeProps) {
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
