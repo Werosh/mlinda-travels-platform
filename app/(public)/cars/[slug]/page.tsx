@@ -6,19 +6,19 @@ import { MapPin, Users, Settings, Fuel, ChevronLeft, CheckCircle2, Shield } from
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { getCarById, getCarReviews } from '@/lib/services/cars.service'
+import { getCarBySlug, getCarReviews } from '@/lib/services/cars.service'
 import { ReviewList } from '@/components/reviews/ReviewList'
 import { CarBookingWidget } from '@/components/cars/CarBookingWidget'
 import { SearchWidget } from '@/components/search/SearchWidget'
 
 interface CarDetailPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
   searchParams: Promise<{ pickupDate?: string; returnDate?: string }>
 }
 
 export async function generateMetadata({ params }: CarDetailPageProps): Promise<Metadata> {
-  const { id } = await params
-  const car = await getCarById(id)
+  const { slug } = await params
+  const car = await getCarBySlug(slug)
   if (!car) return { title: 'Car Not Found' }
   return {
     title: `${car.make} ${car.model} ${car.year ?? ''}`.trim(),
@@ -34,15 +34,13 @@ const categoryColors: Record<string, string> = {
 }
 
 export default async function CarDetailPage({ params, searchParams }: CarDetailPageProps) {
-  const { id } = await params
+  const { slug } = await params
   const sp = await searchParams
 
-  const [car, reviews] = await Promise.all([
-    getCarById(id),
-    getCarReviews(id, 5),
-  ])
-
+  const car = await getCarBySlug(slug)
   if (!car) notFound()
+
+  const reviews = await getCarReviews(car.id, 5)
 
   return (
     <div className="pt-20 min-h-screen bg-background">

@@ -6,19 +6,19 @@ import { MapPin, Star, Users, Wifi, Shield, ChevronLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { getHotelById, getHotelAverageRating, getHotelReviews, checkRoomAvailability } from '@/lib/services/hotels.service'
+import { getHotelBySlug, getHotelById, getHotelAverageRating, getHotelReviews, checkRoomAvailability } from '@/lib/services/hotels.service'
 import { RoomTypeSelector } from '@/components/hotels/RoomTypeSelector'
 import { ReviewList } from '@/components/reviews/ReviewList'
 import { SearchWidget } from '@/components/search/SearchWidget'
 
 interface HotelDetailPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
   searchParams: Promise<{ checkIn?: string; checkOut?: string; guests?: string }>
 }
 
 export async function generateMetadata({ params }: HotelDetailPageProps): Promise<Metadata> {
-  const { id } = await params
-  const hotel = await getHotelById(id)
+  const { slug } = await params
+  const hotel = await getHotelBySlug(slug)
   if (!hotel) return { title: 'Hotel Not Found' }
   return {
     title: hotel.name,
@@ -27,16 +27,16 @@ export async function generateMetadata({ params }: HotelDetailPageProps): Promis
 }
 
 export default async function HotelDetailPage({ params, searchParams }: HotelDetailPageProps) {
-  const { id } = await params
+  const { slug } = await params
   const sp = await searchParams
 
-  const [hotel, avgRating, reviews] = await Promise.all([
-    getHotelById(id),
-    getHotelAverageRating(id),
-    getHotelReviews(id, 5),
-  ])
-
+  const hotel = await getHotelBySlug(slug)
   if (!hotel) notFound()
+
+  const [avgRating, reviews] = await Promise.all([
+    getHotelAverageRating(hotel.id),
+    getHotelReviews(hotel.id, 5),
+  ])
 
   const allImages = [
     hotel.cover_image_url,

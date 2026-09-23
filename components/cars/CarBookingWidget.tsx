@@ -29,21 +29,24 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
       : undefined
   )
   const [dateOpen, setDateOpen] = useState(false)
+  const [isSingleDay, setIsSingleDay] = useState(false)
 
-  const days = dateRange?.from && dateRange?.to
-    ? Math.max(1, differenceInDays(dateRange.to, dateRange.from))
-    : 0
+  const days = isSingleDay 
+    ? (dateRange?.from ? 1 : 0)
+    : (dateRange?.from && dateRange?.to
+      ? Math.max(1, differenceInDays(dateRange.to, dateRange.from))
+      : 0)
 
   const total = days * car.price_per_day
 
   const handleBook = () => {
-    if (!dateRange?.from || !dateRange?.to) {
+    if (!dateRange?.from || (!isSingleDay && !dateRange?.to)) {
       setDateOpen(true)
       return
     }
 
     const startDate = format(dateRange.from, 'yyyy-MM-dd')
-    const endDate = format(dateRange.to, 'yyyy-MM-dd')
+    const endDate = format(isSingleDay ? dateRange.from : dateRange.to!, 'yyyy-MM-dd')
 
     const breakdown = calculatePriceBreakdown({
       basePrice: car.price_per_day,
@@ -77,6 +80,23 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
       </div>
 
       {/* Date Selection */}
+      <div className="flex items-center justify-end mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-medium cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
+          <input
+            type="checkbox"
+            checked={isSingleDay}
+            onChange={(e) => {
+              setIsSingleDay(e.target.checked)
+              if (e.target.checked && dateRange?.from) {
+                setDateRange({ from: dateRange.from, to: undefined })
+              }
+            }}
+            className="rounded text-primary focus:ring-primary h-3.5 w-3.5 accent-primary cursor-pointer"
+          />
+          Single Day Rental
+        </label>
+      </div>
+
       <Popover open={dateOpen} onOpenChange={setDateOpen}>
         <PopoverTrigger render={<Button
             variant="outline"
@@ -84,31 +104,36 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
               'w-full h-auto py-3 px-4 rounded-xl border-border justify-start font-normal mb-3',
               !dateRange?.from && 'text-muted-foreground'
             )}
-            aria-label="Select rental dates"
+            aria-label={isSingleDay ? "Select rental date" : "Select rental dates"}
           />}>
             <Calendar className="mr-2 w-4 h-4 text-muted-foreground flex-shrink-0" />
             {dateRange?.from ? (
               <div className="text-left">
-                <p className="text-xs text-muted-foreground mb-0.5">Rental Period</p>
+                <p className="text-xs text-muted-foreground mb-0.5">{isSingleDay ? 'Rental Date' : 'Rental Period'}</p>
                 <p className="text-sm font-medium">
-                  {format(dateRange.from, 'MMM d')}
-                  {dateRange.to && ` → ${format(dateRange.to, 'MMM d, yyyy')}`}
+                  {format(dateRange.from, 'MMM d, yyyy')}
+                  {!isSingleDay && dateRange.to && ` → ${format(dateRange.to, 'MMM d, yyyy')}`}
                 </p>
               </div>
             ) : (
-              <span className="text-sm">Select pickup → return date</span>
+              <span className="text-sm">Select {isSingleDay ? 'rental date' : 'pickup → return date'}</span>
             )}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="start">
           <CalendarComponent
-            mode="range"
-            selected={dateRange}
-            onSelect={(range) => {
-              setDateRange(range)
-              if (range?.from && range?.to) setDateOpen(false)
+            mode={isSingleDay ? "single" : "range"}
+            selected={isSingleDay ? dateRange?.from : dateRange}
+            onSelect={(val: any) => {
+              if (isSingleDay) {
+                setDateRange({ from: val, to: undefined })
+                setDateOpen(false)
+              } else {
+                setDateRange(val)
+                if (val?.from && val?.to) setDateOpen(false)
+              }
             }}
             disabled={{ before: new Date() }}
-            numberOfMonths={2}
+            numberOfMonths={isSingleDay ? 1 : 2}
             className="rounded-2xl p-3"
           />
         </PopoverContent>
@@ -151,7 +176,7 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
         className="w-full rounded-xl bg-primary hover:bg-[#164d37] h-12 text-base font-semibold shadow-lg shadow-primary/25"
         aria-label={`Book ${car.make} ${car.model}`}
       >
-        {dateRange?.from && dateRange?.to ? 'Book Now' : 'Select Dates to Book'}
+        {dateRange?.from && (isSingleDay || dateRange?.to) ? 'Book Now' : 'Select Dates to Book'}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center mt-3">

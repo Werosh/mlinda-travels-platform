@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { FlightWithDetails } from '@/lib/supabase/types'
+import { generateFlightSlug } from '@/lib/slugs'
 
 export interface FlightSearchParams {
   origin?: string
@@ -159,6 +160,33 @@ export async function getFlightById(id: string): Promise<FlightWithDetails | nul
 
   if (error) return null
   return data as FlightWithDetails
+}
+
+// ── Get Flight By Slug ──────────────────────────────────────────
+export async function getFlightBySlug(slug: string): Promise<FlightWithDetails | null> {
+  // To avoid fetching all flights, we fetch flights with their relations
+  // since generateFlightSlug depends on airline, origin, dest.
+  const supabase = await createClient()
+
+  const { data, error } = await (supabase as any)
+    .from('flights')
+    .select(
+      `
+      *,
+      airlines ( id, name, iata_code, logo_url ),
+      origin:airports!flights_origin_airport_id_fkey ( id, iata_code, name, city, country ),
+      destination:airports!flights_destination_airport_id_fkey ( id, iata_code, name, city, country ),
+      flight_fares ( id, cabin_class, fare_type, price, seats_available, baggage_allowance, is_refundable )
+      `
+    )
+    .eq('is_active', true)
+
+  if (error || !data) return null
+  
+  const flights = data as FlightWithDetails[]
+  const flight = flights.find(f => generateFlightSlug(f) === slug)
+  
+  return flight || null
 }
 
 // ── Get All Airports ────────────────────────────────────────────

@@ -152,7 +152,7 @@ function MockPaymentForm({
   passengerDetails: PassengerInput
   totalAmount: number
 }) {
-  const { selection, priceBreakdown, promoCode, discountPercent, clearCart } = useBookingStore()
+  const { selection, priceBreakdown, promoCode, discountPercent } = useBookingStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -183,11 +183,10 @@ function MockPaymentForm({
         totalPrice: totalAmount,
       })
 
-      clearCart()
-      onSuccess(result.bookingId)
+      // Notify parent — clearCart() is handled by parent AFTER navigation is set
+      onSuccess(result.bookingId!)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Payment failed')
-    } finally {
       setLoading(false)
     }
   }
@@ -225,9 +224,11 @@ function MockPaymentForm({
 
 export default function FlightCheckoutPage() {
   const router = useRouter()
-  const { selection, priceBreakdown, promoCode, discountPercent } = useBookingStore()
+  const { selection, priceBreakdown, promoCode, discountPercent, clearCart } = useBookingStore()
   const [step, setStep] = useState(0)
   const [passengerDetails, setPassengerDetails] = useState<PassengerInput | null>(null)
+  // Guard against redirect when booking just completed
+  const [completedBookingId, setCompletedBookingId] = useState<string | null>(null)
 
   const {
     register,
@@ -236,15 +237,26 @@ export default function FlightCheckoutPage() {
   } = useForm<PassengerInput>({ resolver: zodResolver(passengerSchema) })
 
   useEffect(() => {
-    if (!selection || selection.type !== 'flight') {
+    if ((!selection || selection.type !== 'flight') && !completedBookingId) {
       router.replace('/flights')
     }
-  }, [selection, router])
+  }, [selection, completedBookingId, router])
+
+  if ((!selection || selection.type !== 'flight') && !completedBookingId) {
+    return (
+      <div className="pt-20 min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   if (!selection || selection.type !== 'flight' || !priceBreakdown) {
     return (
       <div className="pt-20 min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <div className="text-center">
+          <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-3" />
+          <p className="text-muted-foreground">Booking confirmed! Redirecting…</p>
+        </div>
       </div>
     )
   }
@@ -255,6 +267,12 @@ export default function FlightCheckoutPage() {
   const onPassengerSubmit = (data: PassengerInput) => {
     setPassengerDetails(data)
     setStep(2)
+  }
+
+  const onPaymentSuccess = (bookingId: string) => {
+    setCompletedBookingId(bookingId)
+    clearCart()
+    router.push(`/booking-confirmation/${bookingId}`)
   }
 
   return (
@@ -399,7 +417,7 @@ export default function FlightCheckoutPage() {
                     Secure Payment
                   </h2>
                   <MockPaymentForm
-                    onSuccess={(bookingId) => router.push(`/booking-confirmation/${bookingId}`)}
+                    onSuccess={onPaymentSuccess}
                     passengerDetails={passengerDetails}
                     totalAmount={totalAmount}
                   />

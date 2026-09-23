@@ -37,6 +37,7 @@ export function RoomTypeSelector({
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
   const [pendingRoomId, setPendingRoomId] = useState<string | null>(null)
   const [activePopover, setActivePopover] = useState<string | null>(null)
+  const [isSingleDay, setIsSingleDay] = useState(false)
   const [inlineDateRange, setInlineDateRange] = useState<DateRange | undefined>(
     checkIn && checkOut
       ? { from: new Date(checkIn), to: new Date(checkOut) }
@@ -47,7 +48,7 @@ export function RoomTypeSelector({
   const effectiveCheckIn = inlineDateRange?.from ? format(inlineDateRange.from, 'yyyy-MM-dd') : checkIn
   const effectiveCheckOut = inlineDateRange?.to ? format(inlineDateRange.to, 'yyyy-MM-dd') : checkOut
 
-  const nights =
+  const nights = isSingleDay ? 1 : (
     effectiveCheckIn && effectiveCheckOut
       ? Math.max(
           1,
@@ -56,10 +57,12 @@ export function RoomTypeSelector({
           )
         )
       : 1
+  )
 
   const handleSelect = (room: RoomType) => {
-    if (!effectiveCheckIn || !effectiveCheckOut) {
-      // No dates — mark this room as pending and pop the date picker
+    const finalCheckOut = isSingleDay ? effectiveCheckIn : effectiveCheckOut;
+    
+    if (!effectiveCheckIn || !finalCheckOut) {
       setPendingRoomId(room.id)
       setSelectedRoom(room.id)
       setActivePopover(`room-${room.id}`)
@@ -69,7 +72,7 @@ export function RoomTypeSelector({
     const breakdown = calculatePriceBreakdown({
       basePrice: room.base_price,
       startDate: effectiveCheckIn,
-      endDate: effectiveCheckOut,
+      endDate: finalCheckOut,
       type: 'hotel',
       guests,
     })
@@ -81,7 +84,7 @@ export function RoomTypeSelector({
       hotelId,
       hotelName,
       startDate: effectiveCheckIn,
-      endDate: effectiveCheckOut,
+      endDate: finalCheckOut,
       guests,
       basePrice: room.base_price,
       coverImage: room.images[0],
@@ -94,35 +97,10 @@ export function RoomTypeSelector({
   // Called when dates are selected from the inline picker
   const onDateRangeSelected = (range: DateRange | undefined, pendingRoom?: RoomType) => {
     setInlineDateRange(range)
+    // Only close the popover if both dates are selected. The user can then click Book Now.
     if (range?.from && range?.to) {
       setActivePopover(null)
-      // If there was a pending room, immediately proceed to checkout
-      if (pendingRoom) {
-        const start = format(range.from, 'yyyy-MM-dd')
-        const end = format(range.to, 'yyyy-MM-dd')
-        const breakdown = calculatePriceBreakdown({
-          basePrice: pendingRoom.base_price,
-          startDate: start,
-          endDate: end,
-          type: 'hotel',
-          guests,
-        })
-        setSelection({
-          type: 'hotel',
-          itemId: pendingRoom.id,
-          itemName: pendingRoom.name,
-          hotelId,
-          hotelName,
-          startDate: start,
-          endDate: end,
-          guests,
-          basePrice: pendingRoom.base_price,
-          coverImage: pendingRoom.images[0],
-        })
-        setPriceBreakdown(breakdown)
-        setPendingRoomId(null)
-        router.push('/checkout')
-      }
+      setPendingRoomId(null)
     }
   }
 
@@ -250,7 +228,7 @@ export function RoomTypeSelector({
                   </div>
                 </div>
 
-                <div className="flex items-end justify-between">
+                <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 mt-2 pt-4 border-t border-border/50">
                   <div>
                     <div className="flex items-baseline gap-1">
                       <span className="font-heading font-bold text-xl text-foreground">
@@ -258,49 +236,98 @@ export function RoomTypeSelector({
                       </span>
                       <span className="text-xs text-muted-foreground">/night</span>
                     </div>
-                    {effectiveCheckIn && effectiveCheckOut && nights > 1 && (
-                      <p className="text-xs text-muted-foreground">
-                        ${totalPrice.toFixed(0)} total for {nights} nights
+                    {effectiveCheckIn && (isSingleDay || effectiveCheckOut) && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        ${totalPrice.toFixed(0)} total for {nights} {nights === 1 ? 'night' : 'nights'}
                       </p>
                     )}
                   </div>
 
-                  {/* Book / Date Picker trigger */}
-                  {isPending && (!effectiveCheckIn || !effectiveCheckOut) ? (
-                    <Popover open={activePopover === `room-${room.id}`} onOpenChange={(open) => setActivePopover(open ? `room-${room.id}` : null)}>
-                      <PopoverTrigger render={
-                        <Button
-                          size="sm"
-                          className="rounded-xl bg-primary hover:bg-[#164d37] gap-1.5"
-                          onClick={(e) => e.stopPropagation()}
+                  <div className="flex flex-col sm:flex-row items-end gap-3 w-full xl:w-auto">
+                    <div className="flex items-center flex-wrap justify-end gap-3">
+                      <label className="flex items-center gap-1.5 text-xs font-medium cursor-pointer text-muted-foreground hover:text-foreground transition-colors mr-2">
+                        <input
+                          type="checkbox"
+                          checked={isSingleDay}
+                          onChange={(e) => setIsSingleDay(e.target.checked)}
+                          className="rounded text-primary focus:ring-primary h-3.5 w-3.5 accent-primary cursor-pointer"
                         />
-                      }>
-                          <Calendar className="w-3.5 h-3.5" />
-                          Pick dates
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="end">
-                        <CalendarComponent
-                          mode="range"
-                          selected={inlineDateRange}
-                          onSelect={(range) => onDateRangeSelected(range, room)}
-                          disabled={{ before: new Date() }}
-                          numberOfMonths={2}
-                          className="rounded-2xl p-3"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  ) : (
+                        Single Day
+                      </label>
+                      
+                      <div className="flex items-center gap-2">
+                        <Popover open={activePopover === `room-${room.id}`} onOpenChange={(open) => setActivePopover(open ? `room-${room.id}` : null)}>
+                          <PopoverTrigger render={<Button 
+                              variant="outline" 
+                              size="sm" 
+                              className={cn("h-9 text-xs font-normal border-primary/30", !effectiveCheckIn && "text-muted-foreground")}
+                            />}>
+                              <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                              {effectiveCheckIn ? format(new Date(effectiveCheckIn), 'MMM d') : 'Check-in'}
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="end">
+                            <CalendarComponent
+                              mode={isSingleDay ? "single" : "range"}
+                              selected={isSingleDay ? inlineDateRange?.from : inlineDateRange}
+                              onSelect={(val: any) => {
+                                if (isSingleDay) {
+                                  setInlineDateRange({ from: val, to: undefined })
+                                  setActivePopover(null)
+                                } else {
+                                  setInlineDateRange(val)
+                                  if (val?.from && val?.to) setActivePopover(null)
+                                }
+                              }}
+                              disabled={{ before: new Date() }}
+                              numberOfMonths={isSingleDay ? 1 : 2}
+                              className="rounded-2xl p-3"
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        {!isSingleDay && (
+                          <>
+                            <span className="text-muted-foreground/60 text-xs font-medium">—</span>
+                            <Popover open={activePopover === `room-out-${room.id}`} onOpenChange={(open) => setActivePopover(open ? `room-out-${room.id}` : null)}>
+                              <PopoverTrigger render={<Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className={cn("h-9 text-xs font-normal border-primary/30", !effectiveCheckOut && "text-muted-foreground")}
+                                />}>
+                                  <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                                  {effectiveCheckOut ? format(new Date(effectiveCheckOut), 'MMM d') : 'Check-out'}
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="end">
+                                <CalendarComponent
+                                  mode="range"
+                                  selected={inlineDateRange}
+                                  onSelect={(val: any) => {
+                                    setInlineDateRange(val)
+                                    if (val?.from && val?.to) setActivePopover(null)
+                                  }}
+                                  disabled={{ before: new Date() }}
+                                  numberOfMonths={2}
+                                  className="rounded-2xl p-3"
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
                     <Button
+                      disabled={!effectiveCheckIn || (!isSingleDay && !effectiveCheckOut)}
                       onClick={(e) => {
                         e.stopPropagation()
                         handleSelect(room)
                       }}
-                      size="sm"
-                      className="rounded-xl bg-primary hover:bg-[#164d37]"
+                      size="default"
+                      className="rounded-xl bg-primary hover:bg-[#164d37] font-semibold w-full sm:w-auto h-9 px-6 mt-2 sm:mt-0"
                     >
                       Book Now
                     </Button>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>

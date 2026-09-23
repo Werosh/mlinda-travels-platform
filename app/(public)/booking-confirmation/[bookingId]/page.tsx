@@ -3,14 +3,15 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { format, differenceInDays } from 'date-fns'
 import {
-  CheckCircle2, Calendar, MapPin, Users, ArrowRight, Building2, Car, Plane
+  CheckCircle2, Calendar, MapPin, Users, ArrowRight,
+  Building2, Car, Plane, Tag, BookOpen, Home
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
-  title: 'Booking Confirmed',
+  title: 'Booking Confirmed | Mlinda Travels',
   description: 'Your Mlinda Travels booking has been confirmed.',
 }
 
@@ -44,41 +45,55 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
     booking = byId
   }
 
-  // For demo/dev - show a success page even if webhook hasn't fired yet
+  // For demo/dev - show a success page even if booking isn't found yet
   const isProcessing = !booking
 
   if (!isProcessing && booking?.status === 'cancelled') {
     notFound()
   }
 
-  const itemName = booking?.type === 'hotel'
-    ? (booking as any).room_types?.name
-    : booking?.type === 'car'
-    ? `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
-    : booking?.type === 'flight'
-    ? `${(booking as any).flights?.airlines?.name} ${(booking as any).flights?.flight_number}`
+  const flight = booking?.flights
+  const isHotel = booking?.type === 'hotel'
+  const isCar = booking?.type === 'car'
+  const isFlight = booking?.type === 'flight'
+
+  const itemName = isHotel
+    ? booking?.room_types?.name
+    : isCar
+    ? `${booking?.cars?.make ?? ''} ${booking?.cars?.model ?? ''}`.trim()
+    : isFlight && flight
+    ? `${flight.airlines?.name ?? ''} ${flight.flight_number ?? ''}`.trim()
     : 'Booking'
 
-  const locationName = booking?.type === 'hotel'
-    ? (booking as any).hotels?.city
-    : booking?.type === 'car'
-    ? (booking as any).cars?.location
-    : booking?.type === 'flight'
-    ? `${(booking as any).flights?.origin?.iata_code} → ${(booking as any).flights?.destination?.iata_code}`
-    : '-'
+  const locationName = isHotel
+    ? booking?.hotels?.city
+    : isCar
+    ? booking?.cars?.location
+    : isFlight && flight
+    ? `${flight.origin?.iata_code ?? ''} → ${flight.destination?.iata_code ?? ''}`
+    : '–'
 
-  const nights = booking && booking.type !== 'flight'
+  const nights = booking && !isFlight
     ? differenceInDays(new Date(booking.end_date), new Date(booking.start_date))
     : null
 
+  const dateLabel = isHotel
+    ? { start: 'Check-in', end: 'Check-out' }
+    : isCar
+    ? { start: 'Pickup', end: 'Return' }
+    : { start: 'Departure', end: 'Arrival' }
+
   return (
-    <div className="pt-20 min-h-screen bg-background">
+    <div className="pt-20 min-h-screen bg-gradient-to-b from-green-50/60 to-background">
       <div className="container-base py-16">
         <div className="max-w-xl mx-auto">
-          {/* Success Header */}
+          {/* ── Success Header ── */}
           <div className="text-center mb-10">
-            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5 ring-8 ring-green-50">
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
+            <div className="relative w-24 h-24 mx-auto mb-6">
+              <div className="absolute inset-0 rounded-full bg-green-100 ring-8 ring-green-50 animate-ping opacity-30" />
+              <div className="relative w-24 h-24 rounded-full bg-green-100 flex items-center justify-center ring-8 ring-green-50">
+                <CheckCircle2 className="w-12 h-12 text-green-600" />
+              </div>
             </div>
             <h1 className="font-heading text-3xl font-bold text-foreground mb-2">
               {isProcessing ? 'Payment Received!' : 'Booking Confirmed!'}
@@ -86,26 +101,28 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
             <p className="text-muted-foreground">
               {isProcessing
                 ? 'Your payment was successful. Your booking confirmation will arrive in your email shortly.'
-                : `Your booking reference is `}
-              {!isProcessing && booking?.booking_ref && (
-                <span className="font-bold text-primary">{booking.booking_ref}</span>
-              )}
+                : (
+                  <>
+                    Your booking reference is{' '}
+                    <span className="font-bold text-primary font-mono">{booking.booking_ref}</span>
+                  </>
+                )}
             </p>
           </div>
 
-          {/* Booking Details Card */}
+          {/* ── Booking Details Card ── */}
           {booking && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden mb-6 shadow-sm">
-              {/* Header */}
+            <div className="bg-white rounded-2xl border border-border overflow-hidden mb-6 shadow-md">
+              {/* Header band */}
               <div className="bg-primary/5 border-b border-border p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Booking Reference</p>
-                    <p className="font-heading font-bold text-xl text-primary">{booking.booking_ref}</p>
+                    <p className="font-heading font-bold text-2xl text-primary font-mono tracking-wider">{booking.booking_ref}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Status</p>
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
                       <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                       {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                     </span>
@@ -113,86 +130,143 @@ export default async function BookingConfirmationPage({ params }: ConfirmationPa
                 </div>
               </div>
 
-              {/* Details */}
+              {/* Details body */}
               <div className="p-5 space-y-4">
+                {/* Type + item */}
                 <div className="flex items-center gap-3">
-                  {booking.type === 'hotel' ? (
-                    <Building2 className="w-5 h-5 text-primary flex-shrink-0" />
-                  ) : booking.type === 'car' ? (
-                    <Car className="w-5 h-5 text-primary flex-shrink-0" />
-                  ) : (
-                    <Plane className="w-5 h-5 text-primary flex-shrink-0" />
-                  )}
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    {isHotel ? (
+                      <Building2 className="w-5 h-5 text-primary" />
+                    ) : isCar ? (
+                      <Car className="w-5 h-5 text-primary" />
+                    ) : (
+                      <Plane className="w-5 h-5 text-primary" />
+                    )}
+                  </div>
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      {booking.type === 'hotel' ? 'Room' : booking.type === 'car' ? 'Vehicle' : 'Flight'}
+                      {isHotel ? 'Room' : isCar ? 'Vehicle' : 'Flight'}
                     </p>
                     <p className="font-semibold text-sm">{itemName ?? 'Your booking'}</p>
+                    {isHotel && booking.hotels?.name && (
+                      <p className="text-xs text-muted-foreground">{booking.hotels.name}</p>
+                    )}
                   </div>
                 </div>
 
+                {/* Location */}
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Location</p>
-                    <p className="font-semibold text-sm">{locationName ?? '-'}</p>
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-primary" />
                   </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      {booking.type === 'hotel' ? 'Check-in → Check-out' : booking.type === 'car' ? 'Pickup → Return' : 'Departure → Arrival'}
+                      {isFlight ? 'Route' : 'Location'}
+                    </p>
+                    <p className="font-semibold text-sm">{locationName ?? '–'}</p>
+                  </div>
+                </div>
+
+                {/* Dates */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      {dateLabel.start} → {dateLabel.end}
                     </p>
                     <p className="font-semibold text-sm">
                       {format(new Date(booking.start_date), 'MMM d, yyyy')} →{' '}
                       {format(new Date(booking.end_date), 'MMM d, yyyy')}
-                      {nights && <span className="text-muted-foreground font-normal ml-1">({nights} {booking.type === 'hotel' ? 'nights' : 'days'})</span>}
+                      {nights != null && (
+                        <span className="text-muted-foreground font-normal ml-1.5 text-xs">
+                          ({nights} {isHotel ? 'nights' : 'days'})
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
 
-                {booking.guests && (
+                {/* Guests / Passengers */}
+                {booking.guests != null && (
                   <div className="flex items-center gap-3">
-                    <Users className="w-5 h-5 text-primary flex-shrink-0" />
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-5 h-5 text-primary" />
+                    </div>
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        {booking.type === 'flight' ? 'Passengers' : 'Guests'}
+                        {isFlight ? 'Passengers' : 'Guests'}
                       </p>
-                      <p className="font-semibold text-sm">{booking.guests} {booking.type === 'flight' ? (booking.guests === 1 ? 'Passenger' : 'Passengers') : (booking.guests === 1 ? 'Guest' : 'Guests')}</p>
+                      <p className="font-semibold text-sm">
+                        {booking.guests}{' '}
+                        {isFlight
+                          ? (booking.guests === 1 ? 'Passenger' : 'Passengers')
+                          : (booking.guests === 1 ? 'Guest' : 'Guests')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Promo code */}
+                {booking.promo_code && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                      <Tag className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Promo Applied</p>
+                      <p className="font-semibold text-sm text-green-600 font-mono">{booking.promo_code}</p>
                     </div>
                   </div>
                 )}
 
                 <Separator />
 
+                {/* Total */}
                 <div className="flex items-center justify-between">
                   <p className="font-semibold">Total Paid</p>
-                  <p className="font-heading font-bold text-lg text-primary">${booking.total_price.toFixed(2)} USD</p>
+                  <p className="font-heading font-bold text-xl text-primary">
+                    ${booking.total_price.toFixed(2)} <span className="text-sm font-normal text-muted-foreground">USD</span>
+                  </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button asChild className="flex-1 rounded-xl bg-primary hover:bg-[#164d37]">
+          {/* ── Actions ── */}
+          <div className="space-y-3 mb-8">
+            <Button asChild className="w-full h-12 rounded-xl bg-primary hover:bg-[#164d37] font-semibold text-base gap-2" id="view-bookings-cta">
               <Link href="/account/bookings">
-                View My Bookings <ArrowRight className="w-4 h-4 ml-1" />
+                <BookOpen className="w-4 h-4" />
+                View All My Bookings
+                <ArrowRight className="w-4 h-4 ml-auto" />
               </Link>
             </Button>
-            <Button asChild variant="outline" className="flex-1 rounded-xl">
-              <Link href="/">Back to Home</Link>
+            {booking && (
+              <Button asChild variant="outline" className="w-full h-11 rounded-xl gap-2">
+                <Link href={`/account/bookings/${booking.id}`}>
+                  View This Booking Details
+                </Link>
+              </Button>
+            )}
+            <Button asChild variant="ghost" className="w-full h-11 rounded-xl text-muted-foreground gap-2">
+              <Link href="/">
+                <Home className="w-4 h-4" />
+                Back to Home
+              </Link>
             </Button>
           </div>
 
-          {/* Cancellation note */}
-          <p className="text-xs text-muted-foreground text-center mt-6">
+          {/* ── Cancellation note ── */}
+          <p className="text-xs text-muted-foreground text-center">
             Free cancellation is available up to 24 hours before your{' '}
-            {booking?.type === 'hotel' ? 'check-in' : 'pickup'} date.
+            {booking?.type === 'hotel' ? 'check-in' : booking?.type === 'flight' ? 'departure' : 'pickup'} date.
             Manage your booking from your{' '}
-            <Link href="/account/bookings" className="text-primary hover:underline">account</Link>.
+            <Link href="/account/bookings" className="text-primary hover:underline font-medium">
+              Bookings page
+            </Link>
+            .
           </p>
         </div>
       </div>

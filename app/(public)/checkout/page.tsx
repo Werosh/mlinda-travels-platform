@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { format, differenceInDays } from 'date-fns'
 import {
   CheckCircle2, User, CreditCard, ChevronRight, Loader2,
-  Building2, Car, Calendar, Users, Tag, X
+  Building2, Car, Calendar, Users, Tag, X, Plane
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -67,7 +67,7 @@ function BookingSummaryCard() {
   const applyPromo = async () => {
     if (!promoInput.trim()) return
     setPromoLoading(true)
-    const result = await validatePromoCode(promoInput.trim(), selection.type, priceBreakdown.subtotal)
+    const result = await validatePromoCode(promoInput.trim(), selection.type as 'hotel' | 'car', priceBreakdown.subtotal)
     setPromoMessage({ text: result.message, valid: result.valid })
     if (result.valid) {
       setPromoCode(promoInput.trim().toUpperCase(), result.discountPercent)
@@ -88,12 +88,15 @@ function BookingSummaryCard() {
         )}
         <div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-            {selection.type === 'hotel' ? <Building2 className="w-3.5 h-3.5" /> : <Car className="w-3.5 h-3.5" />}
-            {selection.type === 'hotel' ? 'Hotel Room' : 'Car Rental'}
+            {selection.type === 'hotel' ? <Building2 className="w-3.5 h-3.5" /> : selection.type === 'car' ? <Car className="w-3.5 h-3.5" /> : <Plane className="w-3.5 h-3.5" />}
+            {selection.type === 'hotel' ? 'Hotel Room' : selection.type === 'car' ? 'Car Rental' : 'Flight'}
           </div>
           <p className="font-semibold text-sm">{selection.itemName}</p>
           {selection.hotelName && <p className="text-xs text-muted-foreground">{selection.hotelName}</p>}
           {selection.location && <p className="text-xs text-muted-foreground">{selection.location}</p>}
+          {selection.type === 'flight' && selection.origin && selection.destination && (
+            <p className="text-xs text-muted-foreground">{selection.origin} → {selection.destination}</p>
+          )}
         </div>
       </div>
 
@@ -105,13 +108,15 @@ function BookingSummaryCard() {
           <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
           <span>
             {format(new Date(selection.startDate), 'MMM d')} → {format(new Date(selection.endDate), 'MMM d, yyyy')}
-            <span className="ml-1 text-xs">({nights} {nights === 1 ? 'night' : nights} {selection.type === 'hotel' ? 'nights' : 'days'})</span>
+            {selection.type !== 'flight' && (
+              <span className="ml-1 text-xs">({nights} {nights === 1 ? 'night' : 'nights'} {selection.type === 'hotel' ? '' : '/ days'})</span>
+            )}
           </span>
         </div>
-        {selection.type === 'hotel' && (
+        {(selection.type === 'hotel' || selection.type === 'flight') && (
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="w-3.5 h-3.5 flex-shrink-0" />
-            <span>{selection.guests} {selection.guests === 1 ? 'Guest' : 'Guests'}</span>
+            <span>{selection.guests} {selection.type === 'flight' ? (selection.guests === 1 ? 'Passenger' : 'Passengers') : (selection.guests === 1 ? 'Guest' : 'Guests')}</span>
           </div>
         )}
       </div>
@@ -121,7 +126,7 @@ function BookingSummaryCard() {
       {/* Price breakdown */}
       <div className="space-y-2 text-sm">
         <div className="flex justify-between text-muted-foreground">
-          <span>${priceBreakdown.basePrice} × {priceBreakdown.nights} {selection.type === 'hotel' ? 'nights' : 'days'}</span>
+          <span>${priceBreakdown.basePrice} × {priceBreakdown.nights} {selection.type === 'hotel' ? 'nights' : selection.type === 'car' ? 'days' : 'passenger(s)'}</span>
           <span>${priceBreakdown.subtotal.toFixed(2)}</span>
         </div>
         {discount > 0 && (
@@ -145,45 +150,49 @@ function BookingSummaryCard() {
         </div>
       </div>
 
-      {/* Promo Code */}
-      <Separator />
-      <div className="space-y-2">
-        <p className="text-xs font-medium">Promo Code</p>
-        {promoCode ? (
-          <div className="flex items-center gap-2">
-            <Badge className="bg-green-100 text-green-700 border-0 flex items-center gap-1">
-              <Tag className="w-3 h-3" /> {promoCode}
-            </Badge>
-            <button onClick={clearPromoCode} className="text-muted-foreground hover:text-destructive">
-              <X className="w-3.5 h-3.5" />
-            </button>
+      {/* Promo Code — only for hotel/car */}
+      {selection.type !== 'flight' && (
+        <>
+          <Separator />
+          <div className="space-y-2">
+            <p className="text-xs font-medium">Promo Code</p>
+            {promoCode ? (
+              <div className="flex items-center gap-2">
+                <Badge className="bg-green-100 text-green-700 border-0 flex items-center gap-1">
+                  <Tag className="w-3 h-3" /> {promoCode}
+                </Badge>
+                <button onClick={clearPromoCode} className="text-muted-foreground hover:text-destructive">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Input
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                  placeholder="WELCOME10"
+                  className="h-9 rounded-xl text-sm uppercase"
+                  aria-label="Promo code"
+                />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={applyPromo}
+                  disabled={promoLoading || !promoInput}
+                  className="rounded-xl"
+                >
+                  {promoLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Apply'}
+                </Button>
+              </div>
+            )}
+            {promoMessage && (
+              <p className={`text-xs ${promoMessage.valid ? 'text-green-600' : 'text-destructive'}`}>
+                {promoMessage.text}
+              </p>
+            )}
           </div>
-        ) : (
-          <div className="flex gap-2">
-            <Input
-              value={promoInput}
-              onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-              placeholder="WELCOME10"
-              className="h-9 rounded-xl text-sm uppercase"
-              aria-label="Promo code"
-            />
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={applyPromo}
-              disabled={promoLoading || !promoInput}
-              className="rounded-xl"
-            >
-              {promoLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Apply'}
-            </Button>
-          </div>
-        )}
-        {promoMessage && (
-          <p className={`text-xs ${promoMessage.valid ? 'text-green-600' : 'text-destructive'}`}>
-            {promoMessage.text}
-          </p>
-        )}
-      </div>
+        </>
+      )}
     </div>
   )
 }
@@ -203,7 +212,7 @@ function MockPaymentForm({
   guestDetails: GuestDetailsInput
   totalAmount: number
 }) {
-  const { selection, priceBreakdown, promoCode, discountPercent, clearCart } = useBookingStore()
+  const { selection, priceBreakdown, promoCode, discountPercent } = useBookingStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -216,26 +225,28 @@ function MockPaymentForm({
 
     try {
       const discount = promoBreakdown(priceBreakdown?.subtotal ?? 0, discountPercent)
-      
+
       const result = await confirmMockPayment({
         type: selection.type,
         itemId: selection.itemId,
-        roomTypeId: selection.itemId,
+        roomTypeId: selection.type === 'hotel' ? selection.itemId : undefined,
         hotelId: selection.hotelId ?? '',
         carId: selection.carId ?? '',
+        flightId: selection.flightId ?? '',
+        fareId: selection.fareId ?? '',
         startDate: selection.startDate,
         endDate: selection.endDate,
         guests: String(selection.guests),
+        passengers: String(selection.guests),
         totalPrice: totalAmount,
         promoCode: promoCode ?? '',
         discountAmount: String(discount),
       })
 
-      clearCart()
-      onSuccess(result.bookingId)
+      // Notify parent — clearCart() is handled by parent AFTER navigation is set
+      onSuccess(result.bookingId!)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Payment failed')
-    } finally {
       setLoading(false)
     }
   }
@@ -249,7 +260,7 @@ function MockPaymentForm({
           No actual payment gateway is integrated. Click below to simulate a successful payment and complete the booking.
         </p>
       </div>
-      
+
       {error && (
         <div className="px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive" role="alert">
           {error}
@@ -277,7 +288,8 @@ export default function CheckoutPage() {
   const { selection, priceBreakdown, promoCode, discountPercent, clearCart } = useBookingStore()
   const [step, setStep] = useState(0)
   const [guestDetails, setGuestDetails] = useState<GuestDetailsInput | null>(null)
-  const [completedBookingRef, setCompletedBookingRef] = useState<string | null>(null)
+  // Track completed booking ID — once set, we do NOT redirect away from checkout
+  const [completedBookingId, setCompletedBookingId] = useState<string | null>(null)
 
   const {
     register,
@@ -287,17 +299,29 @@ export default function CheckoutPage() {
     resolver: zodResolver(guestDetailsSchema),
   })
 
-  // Redirect if no booking in store
+  // Only redirect to home if there's no selection AND we haven't just completed a booking
   useEffect(() => {
-    if (!selection) {
+    if (!selection && !completedBookingId) {
       router.replace('/')
     }
-  }, [selection, router])
+  }, [selection, completedBookingId, router])
 
-  if (!selection || !priceBreakdown) {
+  if (!selection && !completedBookingId) {
     return (
       <div className="pt-20 min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!selection || !priceBreakdown) {
+    // We have a completedBookingId but selection was cleared — navigate in progress
+    return (
+      <div className="pt-20 min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-3" />
+          <p className="text-muted-foreground">Booking confirmed! Redirecting…</p>
+        </div>
       </div>
     )
   }
@@ -311,6 +335,11 @@ export default function CheckoutPage() {
   }
 
   const onPaymentSuccess = (bookingId: string) => {
+    // 1. Store the booking ID so the redirect guard doesn't fire
+    setCompletedBookingId(bookingId)
+    // 2. Clear cart (selection becomes null — guard is now safe due to step 1)
+    clearCart()
+    // 3. Navigate to confirmation page
     router.push(`/booking-confirmation/${bookingId}`)
   }
 
@@ -342,17 +371,27 @@ export default function CheckoutPage() {
                       <span className="text-muted-foreground">Item</span>
                       <span className="font-medium">{selection.itemName}</span>
                     </div>
+                    {selection.type === 'flight' && selection.origin && selection.destination && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Route</span>
+                        <span className="font-medium">{selection.origin} → {selection.destination}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Check-in / Pickup</span>
+                      <span className="text-muted-foreground">
+                        {selection.type === 'flight' ? 'Departure' : 'Check-in / Pickup'}
+                      </span>
                       <span className="font-medium">{format(new Date(selection.startDate), 'PPP')}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Check-out / Return</span>
+                      <span className="text-muted-foreground">
+                        {selection.type === 'flight' ? 'Return / Arrival' : 'Check-out / Return'}
+                      </span>
                       <span className="font-medium">{format(new Date(selection.endDate), 'PPP')}</span>
                     </div>
-                    {selection.type === 'hotel' && (
+                    {(selection.type === 'hotel' || selection.type === 'flight') && (
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Guests</span>
+                        <span className="text-muted-foreground">{selection.type === 'flight' ? 'Passengers' : 'Guests'}</span>
                         <span className="font-medium">{selection.guests}</span>
                       </div>
                     )}
@@ -382,7 +421,7 @@ export default function CheckoutPage() {
                 <div className="bg-white rounded-2xl border border-border p-6">
                   <h2 className="font-heading text-xl font-semibold flex items-center gap-2 mb-5">
                     <User className="w-5 h-5 text-primary" />
-                    {selection.type === 'hotel' ? 'Guest Details' : 'Driver Details'}
+                    {selection.type === 'hotel' ? 'Guest Details' : selection.type === 'flight' ? 'Passenger Details' : 'Driver Details'}
                   </h2>
                   <form onSubmit={handleSubmit(onGuestSubmit)} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">

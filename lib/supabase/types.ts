@@ -212,11 +212,12 @@ export type Database = {
           id: string
           booking_ref: string
           user_id: string
-          type: 'hotel' | 'car'
+          type: 'hotel' | 'car' | 'flight'
           item_id: string
           room_type_id: string | null
           hotel_id: string | null
           car_id: string | null
+          flight_id: string | null
           start_date: string
           end_date: string
           guests: number | null
@@ -235,11 +236,12 @@ export type Database = {
           id?: string
           booking_ref: string
           user_id: string
-          type: 'hotel' | 'car'
+          type: 'hotel' | 'car' | 'flight'
           item_id: string
           room_type_id?: string | null
           hotel_id?: string | null
           car_id?: string | null
+          flight_id?: string | null
           start_date: string
           end_date: string
           guests?: number | null
@@ -526,6 +528,11 @@ export type BookingWithDetails = Booking & {
   hotels?: Hotel | null
   room_types?: RoomType | null
   cars?: Car | null
+  flights?: (Flight & {
+    airlines?: Airline | null
+    origin?: Airport | null
+    destination?: Airport | null
+  }) | null
 }
 
 export type ReviewWithProfile = Review & {

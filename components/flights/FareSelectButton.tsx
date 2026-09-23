@@ -9,6 +9,7 @@ import { calculatePriceBreakdown } from '@/lib/utils/pricing'
 interface FareSelectButtonProps {
   fareId: string
   flightId: string
+  flightSlug: string
   price: number
   passengers: number
   cabinClass: string
@@ -25,6 +26,7 @@ interface FareSelectButtonProps {
 export function FareSelectButton({
   fareId,
   flightId,
+  flightSlug,
   price,
   passengers,
   cabinClass,
@@ -95,7 +97,7 @@ export function FareSelectButton({
       currency: 'USD',
     })
 
-    router.push(`/flights/${flightId}/checkout?fareId=${fareId}&passengers=${passengers}`)
+    router.push(`/flights/${flightSlug}/checkout?fareId=${fareId}&passengers=${passengers}`)
   }
 
   return (

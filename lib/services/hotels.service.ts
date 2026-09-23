@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Hotel, HotelWithRooms, RoomType, RoomTypeWithAvailability } from '@/lib/supabase/types'
+import { generateHotelSlug } from '@/lib/slugs'
 
 export interface HotelSearchParams {
   city?: string
@@ -112,6 +113,25 @@ export async function getHotelById(id: string): Promise<HotelWithRooms | null> {
 
   if (error || !data) return null
   return data as HotelWithRooms
+}
+
+// ── Get Hotel by Slug ─────────────────────────────────────────
+export async function getHotelBySlug(slug: string): Promise<HotelWithRooms | null> {
+  const supabase = await createClient()
+
+  // First fetch all hotels to find the matching slug
+  const { data: hotels, error } = await (supabase as any)
+      .from('hotels')
+    .select('*')
+    .eq('is_active', true)
+
+  if (error || !hotels) return null
+  
+  const hotel = hotels.find((h: Hotel) => generateHotelSlug(h) === slug)
+  if (!hotel) return null
+
+  // Fetch full details with room types
+  return getHotelById(hotel.id)
 }
 
 // ── Get Featured Hotels ───────────────────────────────────────

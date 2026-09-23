@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { Car } from '@/lib/supabase/types'
+import { generateCarSlug } from '@/lib/slugs'
 
 interface CarCardProps {
   car: Car
@@ -25,7 +26,7 @@ export function CarCard({ car, className, variant = 'grid', pickupDate, returnDa
   const bookingParams = new URLSearchParams()
   if (pickupDate) bookingParams.set('pickupDate', pickupDate)
   if (returnDate) bookingParams.set('returnDate', returnDate)
-  const detailUrl = `/cars/${car.id}${bookingParams.toString() ? `?${bookingParams.toString()}` : ''}`
+  const detailUrl = `/cars/${generateCarSlug(car)}${bookingParams.toString() ? `?${bookingParams.toString()}` : ''}`
 
   if (variant === 'list') {
     return (

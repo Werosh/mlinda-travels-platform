@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Car } from '@/lib/supabase/types'
+import { generateCarSlug } from '@/lib/slugs'
 
 export interface CarSearchParams {
   location?: string
@@ -134,6 +135,23 @@ export async function getCarById(id: string): Promise<Car | null> {
 
   if (error || !data) return null
   return data
+}
+
+// ── Get Car by Slug ───────────────────────────────────────────
+export async function getCarBySlug(slug: string): Promise<Car | null> {
+  const supabase = await createClient()
+
+  // Fetch all active cars to find the matching slug
+  // For larger datasets, we would implement a DB-level slug column.
+  const { data, error } = await (supabase as any)
+      .from('cars')
+    .select('*')
+    .eq('is_active', true)
+
+  if (error || !data) return null
+  
+  const car = data.find((c: Car) => generateCarSlug(c) === slug)
+  return car || null
 }
 
 // ── Get Featured Cars ─────────────────────────────────────────

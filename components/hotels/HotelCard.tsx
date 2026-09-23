@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { Hotel } from '@/lib/supabase/types'
+import { generateHotelSlug } from '@/lib/slugs'
 
 interface HotelCardProps {
   hotel: Hotel & { min_price?: number | null }
@@ -108,7 +109,7 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
               )}
             </div>
             <Button asChild size="sm" className="rounded-full bg-foreground text-background hover:bg-primary transition-colors">
-              <Link href={`/hotels/${hotel.id}`}>View Hotel</Link>
+              <Link href={`/hotels/${generateHotelSlug(hotel)}`}>View Hotel</Link>
             </Button>
           </div>
         </div>
@@ -192,7 +193,7 @@ export function HotelCard({ hotel, className, variant = 'grid' }: HotelCardProps
             size="sm"
             className="rounded-full bg-foreground text-background hover:bg-primary transition-colors text-xs h-8 px-5"
           >
-            <Link href={`/hotels/${hotel.id}`} aria-label={`View ${hotel.name} details`}>
+            <Link href={`/hotels/${generateHotelSlug(hotel)}`} aria-label={`View ${hotel.name} details`}>
               View
             </Link>
           </Button>

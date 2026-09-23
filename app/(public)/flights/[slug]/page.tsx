@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getFlightById } from '@/lib/services/flights.service'
+import { getFlightBySlug, getFlightById } from '@/lib/services/flights.service'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
@@ -19,15 +19,16 @@ import {
 import { cn, formatDuration } from '@/lib/utils'
 import { SearchWidget } from '@/components/search/SearchWidget'
 import { FareSelectButton } from '@/components/flights/FareSelectButton'
+import { generateFlightSlug } from '@/lib/slugs'
 
 interface FlightDetailPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
   searchParams: Promise<{ passengers?: string }>
 }
 
 export async function generateMetadata({ params }: FlightDetailPageProps): Promise<Metadata> {
-  const { id } = await params
-  const flight = await getFlightById(id)
+  const { slug } = await params
+  const flight = await getFlightBySlug(slug)
   if (!flight) return { title: 'Flight Not Found' }
   return {
     title: `${flight.flight_number} · ${flight.origin?.city} → ${flight.destination?.city} | Milinda Travels`,
@@ -57,11 +58,11 @@ export default async function FlightDetailPage({
   params,
   searchParams,
 }: FlightDetailPageProps) {
-  const { id } = await params
+  const { slug } = await params
   const { passengers: passengersStr } = await searchParams
   const passengers = passengersStr ? Number(passengersStr) : 1
 
-  const flight = await getFlightById(id)
+  const flight = await getFlightBySlug(slug)
   if (!flight) notFound()
 
   const departure = new Date(flight.departure_time)
@@ -256,6 +257,7 @@ export default async function FlightDetailPage({
                 <FareSelectButton
                   fareId={fare.id}
                   flightId={flight.id}
+                  flightSlug={generateFlightSlug(flight)}
                   price={fare.price}
                   passengers={passengers}
                   cabinClass={cabin}

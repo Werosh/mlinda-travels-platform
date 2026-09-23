@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { format } from 'date-fns'
-import { Calendar, Car, Building2, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Calendar, Car, Building2, ArrowRight, ArrowLeft, Plane } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/server'
 import { getUserBookings } from '@/lib/services/bookings.service'
 import { redirect } from 'next/navigation'
+import type { BookingWithDetails } from '@/lib/supabase/types'
 
 export const metadata: Metadata = {
-  title: 'My Bookings',
+  title: 'My Bookings | Mlinda Travels',
   description: 'View and manage all your past and upcoming trips',
 }
 
@@ -20,10 +21,38 @@ const statusColors: Record<string, string> = {
   completed: 'bg-blue-100 text-blue-700',
 }
 
+function getBookingDisplay(booking: BookingWithDetails) {
+  if (booking.type === 'hotel') {
+    return {
+      icon: <Building2 className="w-6 h-6 text-primary" />,
+      name: (booking as any).room_types?.name || (booking as any).hotels?.name || 'Hotel Booking',
+      location: (booking as any).hotels?.city || '–',
+    }
+  }
+  if (booking.type === 'car') {
+    return {
+      icon: <Car className="w-6 h-6 text-primary" />,
+      name: `${(booking as any).cars?.make ?? ''} ${(booking as any).cars?.model ?? ''}`.trim() || 'Car Rental',
+      location: (booking as any).cars?.location || '–',
+    }
+  }
+  // flight
+  const flight = (booking as any).flights
+  const origin = flight?.origin?.iata_code ?? ''
+  const destination = flight?.destination?.iata_code ?? ''
+  const airline = flight?.airlines?.name ?? ''
+  const flightNumber = flight?.flight_number ?? ''
+  return {
+    icon: <Plane className="w-6 h-6 text-primary" />,
+    name: [airline, flightNumber].filter(Boolean).join(' ') || 'Flight',
+    location: origin && destination ? `${origin} → ${destination}` : '–',
+  }
+}
+
 export default async function BookingsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) {
     redirect('/auth/login')
   }
@@ -44,13 +73,7 @@ export default async function BookingsPage() {
         <h2 className="font-heading text-xl font-semibold mb-4">{title}</h2>
         <div className="space-y-3">
           {group.map((booking) => {
-            const isHotel = booking.type === 'hotel'
-            const itemName = isHotel
-              ? (booking as any).room_types?.name || (booking as any).hotels?.name
-              : `${(booking as any).cars?.make} ${(booking as any).cars?.model}`
-            const location = isHotel
-              ? (booking as any).hotels?.city
-              : (booking as any).cars?.location
+            const { icon, name, location } = getBookingDisplay(booking)
 
             return (
               <Link
@@ -59,14 +82,10 @@ export default async function BookingsPage() {
                 className="flex items-center gap-4 bg-white rounded-2xl border border-border p-4 hover:border-primary/40 hover:shadow-sm transition-all group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  {isHotel ? (
-                    <Building2 className="w-6 h-6 text-primary" />
-                  ) : (
-                    <Car className="w-6 h-6 text-primary" />
-                  )}
+                  {icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-base truncate">{itemName ?? 'Booking'}</p>
+                  <p className="font-semibold text-base truncate">{name}</p>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     {location} · {format(new Date(booking.start_date), 'MMM d, yyyy')} → {format(new Date(booking.end_date), 'MMM d, yyyy')}
                   </p>
@@ -116,6 +135,9 @@ export default async function BookingsPage() {
               </Button>
               <Button asChild variant="outline" className="rounded-xl w-full sm:w-auto">
                 <Link href="/cars">Rent a Car</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-xl w-full sm:w-auto">
+                <Link href="/flights">Book a Flight</Link>
               </Button>
             </div>
           </div>

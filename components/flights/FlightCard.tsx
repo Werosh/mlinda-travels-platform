@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { FlightWithDetails } from '@/lib/supabase/types'
 import { cn, formatDuration } from '@/lib/utils'
+import { generateFlightSlug } from '@/lib/slugs'
 
 interface FlightCardProps {
   flight: FlightWithDetails
@@ -164,7 +165,7 @@ export function FlightCard({ flight, passengers = 1 }: FlightCardProps) {
             size="sm"
             className="rounded-xl bg-primary hover:bg-primary-dark shadow-sm shadow-primary/20 text-white px-4 h-10 group-hover:shadow-md group-hover:shadow-primary/30 transition-all"
           >
-            <Link href={`/flights/${flight.id}?passengers=${passengers}`}>
+            <Link href={`/flights/${generateFlightSlug(flight)}?passengers=${passengers}`}>
               Select
               <ChevronRight className="w-4 h-4 ml-1" />
             </Link>
