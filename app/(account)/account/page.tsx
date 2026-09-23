@@ -25,7 +25,7 @@ export default async function AccountPage() {
   if (!user) return null
 
   const [profile, bookings] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user.id).single().then((r) => r.data),
+    supabase.from('profiles').select('*').eq('id', user.id).single().then((r) => r.data as any),
     getUserBookings(user.id),
   ])
 

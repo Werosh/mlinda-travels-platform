@@ -121,7 +121,7 @@ export function CarBookingWidget({ car, initialPickupDate, initialReturnDate }: 
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="start">
           <CalendarComponent
-            mode={isSingleDay ? "single" : "range"}
+            mode={(isSingleDay ? "single" : "range") as any}
             selected={isSingleDay ? dateRange?.from : dateRange}
             onSelect={(val: any) => {
               if (isSingleDay) {

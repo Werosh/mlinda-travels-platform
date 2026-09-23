@@ -83,7 +83,7 @@ export async function searchCars(params: CarSearchParams): Promise<CarSearchResu
   if (error) throw new Error(error.message)
 
   // Filter by availability if dates provided
-  let filtered = data ?? []
+  let filtered: Car[] = data ?? []
   if (params.pickupDate && params.returnDate) {
     const availableCarIds = await getAvailableCarIds(
       filtered.map((c) => c.id),
@@ -118,7 +118,7 @@ async function getAvailableCarIds(
     .lt('date', endDate)
     .eq('is_available', false)
 
-  const unavailableIds = new Set(unavailable?.map((r) => r.car_id) ?? [])
+  const unavailableIds = new Set(unavailable?.map((r: any) => r.car_id) ?? [])
   return carIds.filter((id) => !unavailableIds.has(id))
 }
 
@@ -213,6 +213,6 @@ export async function getCarLocations(): Promise<string[]> {
     .eq('is_active', true)
     .order('location')
 
-  const locations = [...new Set(data?.map((c) => c.location) ?? [])]
+  const locations = Array.from(new Set<string>(data?.map((c: any) => c.location as string) ?? []))
   return locations
 }

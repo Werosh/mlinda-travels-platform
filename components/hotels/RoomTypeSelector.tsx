@@ -267,7 +267,7 @@ export function RoomTypeSelector({
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0 rounded-2xl shadow-xl" align="end">
                             <CalendarComponent
-                              mode={isSingleDay ? "single" : "range"}
+                              mode={(isSingleDay ? "single" : "range") as any}
                               selected={isSingleDay ? inlineDateRange?.from : inlineDateRange}
                               onSelect={(val: any) => {
                                 if (isSingleDay) {
