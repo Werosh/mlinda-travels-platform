@@ -29,6 +29,11 @@ export const metadata: Metadata = {
     description: 'Premium hotel and car rental booking in Sri Lanka',
     type: 'website',
   },
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 }
 
 export default function RootLayout({
